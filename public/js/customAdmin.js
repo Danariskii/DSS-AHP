@@ -1,5 +1,29 @@
-$(function()
-{
+$(document).ready(function () {
+
+	$('#EditBtn').click(function(){
+		var tugel = document.getElementById('EditBtn').text;
+		// alert(1);
+		// alert(tugel);
+		if(tugel == "Edit")
+		{
+			$(this).switchClass("up","down");
+			document.getElementById('EditBtn').text = "Cancel";
+			// alert(2);
+			// $.post("{{ URL::to('kriteria') }}", function( data ) {
+				  
+			// });
+			// document.getElementsByName("JumlahKriteria");
+			alert(JumlahKriteria);
+		}
+		else
+		{
+			$(this).switchClass("down","up");
+			document.getElementById('EditBtn').text = "Edit";
+			// alert(3);
+			// $(this).text("Edit");
+		}
+	});
+
 	$('#sliderKapasitasGaransi').jqxSlider({
 		height: 30,
 		width: "90%",

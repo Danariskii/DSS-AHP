@@ -36,11 +36,10 @@
     <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
 
     <script src="{{ asset('js/jquery.js') }}" ></script>
-    <script src="{{ asset('js/jquery-ui.js') }}" ></script>
+    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
 
-    <script src="{{ asset('js/nouislider.min.js') }}" ></script>
-    <script src="{{ asset('js/wNumb.js') }}" ></script>
-    <link href="{{ asset('css/nouislider.min.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('js/jquery-ui.js') }}" ></script>
 
     <script src="{{ asset('jqwidgets/jqxcore.js') }}"  type="text/javascript"></script>
     <script src="{{ asset('jqwidgets/jqxslider.js') }}"  type="text/javascript"></script>
@@ -48,17 +47,14 @@
     <link href="{{ asset('jqwidgets/styles/jqx.base.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('jqwidgets/styles/jqx.custom.css') }}" rel="stylesheet" type="text/css" />
 
-
-
-    <script src="{{ asset('js/customAdmin.js') }}" ></script>
-
-
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" />
-    
-
     <!-- jquery untuk kebawah -->
     <script src="{{ asset('js/easing.js') }}"></script>
+
+
+    <!-- <script src="{{ asset('js/customAdmin.js') }}" ></script> -->
+
+    
+
 
     <script type="text/javascript">
         jQuery(document).ready(function($) 
@@ -66,13 +62,95 @@
             $(".scroll").click(function(event)
             {       
                 event.preventDefault();
-                $('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+                $('html,body').animate(
+                    {scrollTop:$(this.hash).offset().top},1000);
             });
         });
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <script type="application/x-javascript"> 
+        addEventListener("load", function()
+            {
+                setTimeout(hideURLbar, 0); },false); 
+                function hideURLbar(){ window.scrollTo(0,1); 
+            } 
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function () 
+    {
+
+        var JumlahN = '{{$JumlahN}}';
+        var NamaKriteria = JSON.parse('{!! ($NamaKriteria) !!}');
+        var KombinasiKriteria = JSON.parse('{!! ($KombinasiKriteria) !!}');
+
+        console.log(KombinasiKriteria);
+    
+        $('#EditBtn').click(function()
+        {
+            var tugel = document.getElementById('EditBtn').text;
+            // alert(1);
+            // alert(tugel);
+            if(tugel == "Edit")
+            {
+                $(this).switchClass("up","down");
+                document.getElementById('EditBtn').text = "Cancel";
+                // $.post("{{ URL::to('kriteria') }}", function( data ) {
+                      
+                // });
+                alert(JumlahN);
+            }
+            else
+            {
+                $(this).switchClass("down","up");
+                document.getElementById('EditBtn').text = "Edit";
+            }
+        });
+
+        $('#sliderKapasitasGaransi').jqxSlider({
+            height: 30,
+            width: "90%",
+            min: -9, 
+            max: 9, 
+            step: 1, 
+            ticksFrequency: 2,  //keterangan
+            values: [0], 
+            // tooltip: true,
+            ticksPosition: 'bottom',
+            // showMinorTicks: true,
+            // minorTicksFrequency: 2,
+            // showTickLabels: true,
+            showRange: false,
+            rtl:true,
+            mode: 'fixed'       
+        });
+
+        $('#sliderKapasitasGaransi').jqxSlider('focus');
+
+        $('#sliderKapasitasGaransi').on('change', function (event) 
+        {
+            
+            if(event.args.value>0)
+            {
+                document.getElementById('KapasitasGaransiMin').innerHTML = 'Kapasitas ' + event.args.value + ' kali lebih penting dari Garansi';
+                document.getElementById('KapasitasGaransiMax').innerHTML = ' ';
+            }
+            else if(event.args.value<0)
+            {
+                document.getElementById('KapasitasGaransiMin').innerHTML = '';
+                document.getElementById('KapasitasGaransiMax').innerHTML = 'Garansi ' + (event.args.value*-1) + ' kali lebih penting dari Kapasitas';
+            }
+            else
+            {
+                document.getElementById('KapasitasGaransiMin').innerHTML = 'Kapasitas dan Garansi sama Pentingnya';
+                document.getElementById('KapasitasGaransiMax').innerHTML = '';
+            }
+            // console.log(event.args.value);
+        });
+    });
+    </script>
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -111,7 +189,7 @@
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a><i class="fa fa-user fa-fw"></i>{{Session::get('username')}}</a>
+                        <li><a><i class="fa fa-user fa-fw"></i> {{Session::get('username')}}</a>
                         </li>
                         <li><a href="logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
@@ -184,7 +262,9 @@
         <div id="dss" class="DSS">
             <div class="head text-center">
                 <h2><span> </span> Decision Support System</h2>
+                <a class="Edit-btn" id="EditBtn" value="button" type="button">Edit</a>
             </div>
+
 
             <h3>What more importance between <br/> Kapasitas or Garansi</h3>
             <div class="containerValue">
@@ -203,52 +283,9 @@
                 </div>
                 <div class="slider" id="sliderKapasitasPerawatan"></div>
             </div>
-
-            <h3><h3>What more importance between <br/> Kapasitas or Fitur</h3></h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="PerawatanMin"></div>
-                    <div style="float: right" id="PerawatanMax"></div>
-                </div>
-                <div class="slider" id="sliderPerawatan"></div>
-            </div>
-
-            <h3><h3>What more importance between <br/> Kapasitas or Listrik</h3></h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="FiturMin"></div>
-                    <div style="float: right" id="FiturMax"></div>
-                </div>
-                <div class="slider" id="sliderFitur"></div>
-            </div>
-
-            <h3><h3>What more importance between <br/> Kapasitas or Desain</h3></h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="ListrikMin"></div>
-                    <div style="float: Right" id="ListrikMax"></div>
-                </div>
-                <div class="slider" id="sliderListrik"></div>
-            </div>
-
-            <h3><h3>What more importance between <br/> Kapasitas or Ketahanan</h3></h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="DesainMin"></div>
-                    <div style="float: right" id="DesainMax"></div>
-                </div>
-                <div class="slider" id="sliderDesain"></div>
-            </div>
-
-            <h3>Ketahanan</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="KetahananMin"></div>
-                    <div style="float: right" id="KetahananMax"></div>
-                </div>
-                <div class="slider" id="sliderKetahanan"></div>
-            </div>
+            
         </div>
+
 
     <!-- end Decision Support System -->
 

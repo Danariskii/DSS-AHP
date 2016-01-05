@@ -11,7 +11,13 @@ use Validator, Input, Redirect;
 use Session;
 use DB;
 use Hybrid_Auth;
-use Hybrid_Endpoint;   
+use Hybrid_Endpoint;
+
+use App\User;
+use App\Table_Kriteria;
+use App\Table_Matrix_Kriteria;
+use App\Table_SubKriteria;
+use App\Table_Matrix_SubKriteria;
 
 class PagesController extends Controller
 {
@@ -24,7 +30,7 @@ class PagesController extends Controller
 
 	public function index()
     {
-         if(Session::has('privilege')=='Admin') return view('pages.HomeAdmin');
+         if(Session::has('privilege')=='Admin') return view('layoutAdmin');
 
         // $users = DB::table('users')->get();
         // $id = Session::get('id');
@@ -60,7 +66,9 @@ class PagesController extends Controller
                 if($row[0]->privilege == 'Admin')
                 {
                     Session::put('username', $row[0]->name);
-                    return view('pages.HomeAdmin');
+                    // return view('pages.HomeAdmin');
+                    return redirect('kriteria');
+                    // return view('layoutAdmin');
                 }
                 else if($row[0]->privilege == 'user')
                 {
@@ -86,6 +94,28 @@ class PagesController extends Controller
     {
     	Session::flush();
     	return redirect('users');
+    }
+
+    public function kriteria(Table_Kriteria $table_kriteria)
+    {
+        $table_kriteria = Table_Kriteria::count();
+        $JumlahN = (($table_kriteria * $table_kriteria) - $table_kriteria)/2;
+        $KombinasiKriteria;
+        // $nama_kriteria = DB::select('SELECT Nama_Kriteria from table_kriteria');
+        $nama_kriteria = Table_Kriteria::all();
+
+        for ($i=0; $i<$table_kriteria; $i++) 
+        {
+            for ($m=1+$i; $m<$table_kriteria; $m++)
+            { 
+                $KombinasiKriteria[$i][$m] = $nama_kriteria[$i]['Nama_Kriteria']."".$nama_kriteria[$m]['Nama_Kriteria'];
+                // $KombinasiKriteria[$i][$m] = "i = ".$i." dan m = ".$m;
+            }
+        }
+
+        return view('layoutAdmin')->with('JumlahN', $table_kriteria)->with('KombinasiKriteria', json_encode($KombinasiKriteria))->with('NamaKriteria', json_encode($nama_kriteria));
+        /*return view('layoutAdmin', compact('JumlahN','nama_kriteria'));*/
+        // return view('pages.HomeAdmin');
     }
 }
 ?>

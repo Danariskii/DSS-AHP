@@ -17,12 +17,16 @@
 // });
 
 Route::get('/', "PagesController@redirect");
-Route::get('users', "PagesController@index");
+
+// Route::get('admin', "PagesController@kriteria");
 Route::get('logout', "PagesController@logout");
-
 Route::get('login', "PagesController@login");
-post('admin', 'PagesController@submit');
 
+Route::get('users', "PagesController@index");
+
+post('admin', 'PagesController@submit');
+// post('kriteria', 'PagesController@kriteria');
+Route::get('kriteria', 'PagesController@kriteria');
 
 
 // post('login', "PagesController@login");
