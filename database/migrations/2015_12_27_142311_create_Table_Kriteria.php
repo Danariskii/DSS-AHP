@@ -30,6 +30,6 @@ class CreateTableKriteria extends Migration
      */
     public function down()
     {
-        Schema::drop('=Table_Kriteria');
+        Schema::drop('Table_Kriteria');
     }
 }

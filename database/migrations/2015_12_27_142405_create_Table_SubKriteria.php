@@ -31,6 +31,6 @@ class CreateTableSubKriteria extends Migration
      */
     public function down()
     {
-        Schema::drop('=Table_SubKriteria');
+        Schema::drop('Table_SubKriteria');
     }
 }

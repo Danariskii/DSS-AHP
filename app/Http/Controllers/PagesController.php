@@ -30,7 +30,7 @@ class PagesController extends Controller
 
 	public function index()
     {
-         if(Session::has('privilege')=='Admin') return view('layoutAdmin');
+         if(Session::has('privilege')=='Admin') return view('pages.home');
 
         // $users = DB::table('users')->get();
         // $id = Session::get('id');
@@ -67,7 +67,7 @@ class PagesController extends Controller
                 {
                     Session::put('username', $row[0]->name);
                     // return view('pages.HomeAdmin');
-                    return redirect('kriteria');
+                    return redirect('admin');
                     // return view('layoutAdmin');
                 }
                 else if($row[0]->privilege == 'user')
@@ -113,7 +113,7 @@ class PagesController extends Controller
             }
         }
 
-        return view('layoutAdmin')->with('JumlahN', $table_kriteria)->with('KombinasiKriteria', json_encode($KombinasiKriteria))->with('NamaKriteria', json_encode($nama_kriteria));
+        return view('layoutAdmin')->with('JumlahN', $JumlahN)->with('KombinasiKriteria', json_encode($KombinasiKriteria))->with('NamaKriteria', json_encode($nama_kriteria));
         /*return view('layoutAdmin', compact('JumlahN','nama_kriteria'));*/
         // return view('pages.HomeAdmin');
     }

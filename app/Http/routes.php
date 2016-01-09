@@ -26,7 +26,7 @@ Route::get('users', "PagesController@index");
 
 post('admin', 'PagesController@submit');
 // post('kriteria', 'PagesController@kriteria');
-Route::get('kriteria', 'PagesController@kriteria');
+Route::get('admin', 'PagesController@kriteria');
 
 
 // post('login', "PagesController@login");

@@ -16,7 +16,8 @@ class CreateMatrixKriteria extends Migration
             $table->increments('id');
 
             $table->string('Nama_Matrix_Kriteria');
-            $table->integer('Nilai_Matrix_Kriteria')->nullable();
+            $table->string('Nama_Matrix_Pasangan_Kriteria');
+            $table->float('Nilai_Matrix_Kriteria')->nullable();
 
             // $table->timestamps();
         });
@@ -29,6 +30,6 @@ class CreateMatrixKriteria extends Migration
      */
     public function down()
     {
-        Schema::drop('=Table_Matrix_Kriteria');
+        Schema::drop('Table_Matrix_Kriteria');
     }
 }

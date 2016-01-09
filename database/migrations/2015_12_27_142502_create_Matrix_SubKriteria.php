@@ -16,7 +16,8 @@ class CreateMatrixSubKriteria extends Migration
             $table->increments('id');
 
             $table->string('Nama_Matrix_SubKriteria');
-            $table->integer('Nilai_Matrix_SubKriteria')->nullable();
+            $table->string('Nama_Matrix_Pasangan_SubKriteria');
+            $table->float('Nilai_Matrix_SubKriteria')->nullable();
 
             // $table->timestamps();
         });
@@ -29,6 +30,6 @@ class CreateMatrixSubKriteria extends Migration
      */
     public function down()
     {
-        Schema::drop('=Table_Matrix_SubKriteria');
+        Schema::drop('Table_Matrix_SubKriteria');
     }
 }
