@@ -22,11 +22,15 @@ Route::get('/', "PagesController@redirect");
 Route::get('logout', "PagesController@logout");
 Route::get('login', "PagesController@login");
 
-Route::get('users', "PagesController@index");
+// Route::get('users', "PagesController@index");
+Route::get('users', "PagesController@kriteriaUser");
+
 
 post('admin', 'PagesController@submit');
 // post('kriteria', 'PagesController@kriteria');
 Route::get('admin', 'PagesController@kriteria');
+
+
 
 
 // post('login', "PagesController@login");

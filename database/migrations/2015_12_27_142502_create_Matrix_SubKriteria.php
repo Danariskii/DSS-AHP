@@ -17,7 +17,7 @@ class CreateMatrixSubKriteria extends Migration
 
             $table->string('Nama_Matrix_SubKriteria');
             $table->string('Nama_Matrix_Pasangan_SubKriteria');
-            $table->float('Nilai_Matrix_SubKriteria')->nullable();
+            $table->string('Nilai_Matrix_SubKriteria')->nullable();
 
             // $table->timestamps();
         });

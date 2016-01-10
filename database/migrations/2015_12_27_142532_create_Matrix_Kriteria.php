@@ -17,7 +17,7 @@ class CreateMatrixKriteria extends Migration
 
             $table->string('Nama_Matrix_Kriteria');
             $table->string('Nama_Matrix_Pasangan_Kriteria');
-            $table->float('Nilai_Matrix_Kriteria')->nullable();
+            $table->string('Nilai_Matrix_Kriteria')->nullable();
 
             // $table->timestamps();
         });

@@ -16,7 +16,7 @@ class CreateTableSubKriteria extends Migration
             $table->increments('id');
 
             $table->string('Nama_SubKriteria');
-            $table->integer('Nilai_Bobot_SubKriteria')->nullable();
+            $table->string('Nilai_Bobot_SubKriteria')->nullable();
 
             $table->string('Nama_Kriteria')->nullable;
 

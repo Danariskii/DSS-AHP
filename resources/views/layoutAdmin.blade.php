@@ -129,74 +129,74 @@
             }
         });
 
-        // for (var i = 0; i < NamaKriteria.length; i++) 
-        // {
-        //     // alert(i);
-        //     for (var j = 1+i; j < NamaKriteria.length ; j++) 
-        //     {
-        //         // console.log(i+' dan '+j);
-        //         var ni = document.getElementById('grupslider');
-        //         var namaslider = '#slider'+KombinasiKriteria[i][j];
-        //         var namaketeranganmin = 'KetMin'+KombinasiKriteria[i][j];
-        //         var namaketeranganmax = 'KetMax'+KombinasiKriteria[i][j];
-        //         var namakriteriaA = NamaKriteria[i].Nama_Kriteria;
-        //         var namakriteriaB = NamaKriteria[j].Nama_Kriteria;
+        for (var i = 0; i < NamaKriteria.length; i++) 
+        {
+            // alert(i);
+            for (var j = 1+i; j < NamaKriteria.length ; j++) 
+            {
+                // console.log(i+' dan '+j);
+                var ni = document.getElementById('grupslider');
+                var namaslider = '#slider'+KombinasiKriteria[i][j];
+                var namaketeranganmin = 'KetMin'+KombinasiKriteria[i][j];
+                var namaketeranganmax = 'KetMax'+KombinasiKriteria[i][j];
+                var namakriteriaA = NamaKriteria[i].Nama_Kriteria;
+                var namakriteriaB = NamaKriteria[j].Nama_Kriteria;
 
-        //         var newdiv = document.createElement('div');
-        //         var divIdName = KombinasiKriteria[i][j];
-        //         newdiv.setAttribute('id',divIdName);
-        //         newdiv.innerHTML = '<h3>What more importance between <br/> '+namakriteriaA+' or '+namakriteriaB+' </h3>'
-        //         +'<div class="containerValue">'
-        //         +' <div class="minmax">'
-        //         +'   <div style="float: left" id="'+namaketeranganmin+'"></div>'
-        //         +'   <div style="float: right" id="'+namaketeranganmax+'"></div>'
-        //         +' </div>'
-        //         +'  <div class="slider" id="slider'+KombinasiKriteria[i][j]+'"></div>'
-        //         +'</div>';
-        //         ni.appendChild(newdiv);
+                var newdiv = document.createElement('div');
+                var divIdName = KombinasiKriteria[i][j];
+                newdiv.setAttribute('id',divIdName);
+                newdiv.innerHTML = '<h3>What more importance between <br/> '+namakriteriaA+' or '+namakriteriaB+' </h3>'
+                +'<div class="containerValue">'
+                +' <div class="minmax">'
+                +'   <div style="float: left" id="'+namaketeranganmin+'"></div>'
+                +'   <div style="float: right" id="'+namaketeranganmax+'"></div>'
+                +' </div>'
+                +'  <div class="slider" id="slider'+KombinasiKriteria[i][j]+'"></div>'
+                +'</div>';
+                ni.appendChild(newdiv);
 
-        //         $(namaslider).jqxSlider({
-        //             height: 30,
-        //             width: "90%",
-        //             min: -9, 
-        //             max: 9, 
-        //             step: 1, 
-        //             ticksFrequency: 2,  //keterangan
-        //             values: [0], 
-        //             // tooltip: true,
-        //             ticksPosition: 'bottom',
-        //             // showMinorTicks: true,
-        //             // minorTicksFrequency: 2,
-        //             // showTickLabels: true,
-        //             showRange: false,
-        //             rtl:true,
-        //             mode: 'fixed'       
-        //         });
+                $(namaslider).jqxSlider({
+                    height: 30,
+                    width: "90%",
+                    min: -9, 
+                    max: 9, 
+                    step: 1, 
+                    ticksFrequency: 2,  //keterangan
+                    values: [0], 
+                    // tooltip: true,
+                    ticksPosition: 'bottom',
+                    // showMinorTicks: true,
+                    // minorTicksFrequency: 2,
+                    // showTickLabels: true,
+                    showRange: false,
+                    rtl:true,
+                    mode: 'fixed'       
+                });
 
-        //         $(namaslider).jqxSlider('focus');
+                $(namaslider).jqxSlider('focus');
 
-        //         // $(namaslider).on('change', function (event) 
-        //         // {
+                $(namaslider).on('change', function (event) 
+                {
                     
-        //         //     if(event.args.value>0)
-        //         //     {
-        //         //         document.getElementById(namaketeranganmin).innerHTML = namakriteriaA +' '+ event.args.value + ' kali lebih penting dari '+namakriteriaB;
-        //         //         document.getElementById(namaketeranganmax).innerHTML = ' ';
-        //         //     }
-        //         //     else if(event.args.value<0)
-        //         //     {
-        //         //         document.getElementById(namaketeranganmin).innerHTML = '';
-        //         //         document.getElementById(namaketeranganmax).innerHTML = namakriteriaB +' '+ (event.args.value*-1) + ' kali lebih penting dari '+namakriteriaA;
-        //         //     }
-        //         //     else
-        //         //     {
-        //         //         document.getElementById(namaketeranganmin).innerHTML = namakriteriaA +' dan '+ namakriteriaB+ ' sama Pentingnya';
-        //         //         document.getElementById(namaketeranganmax).innerHTML = '';
-        //         //     }
-        //         //     // console.log(event.args.value);
-        //         // });
-        //     };
-        // };
+                    if(event.args.value>0)
+                    {
+                        document.getElementById(namaketeranganmin).innerHTML = namakriteriaA +' '+ event.args.value + ' kali lebih penting dari '+namakriteriaB;
+                        document.getElementById(namaketeranganmax).innerHTML = ' ';
+                    }
+                    else if(event.args.value<0)
+                    {
+                        document.getElementById(namaketeranganmin).innerHTML = '';
+                        document.getElementById(namaketeranganmax).innerHTML = namakriteriaB +' '+ (event.args.value*-1) + ' kali lebih penting dari '+namakriteriaA;
+                    }
+                    else
+                    {
+                        document.getElementById(namaketeranganmin).innerHTML = namakriteriaA +' dan '+ namakriteriaB+ ' sama Pentingnya';
+                        document.getElementById(namaketeranganmax).innerHTML = '';
+                    }
+                    // console.log(event.args.value);
+                });
+            };
+        };
     });
     </script>
 

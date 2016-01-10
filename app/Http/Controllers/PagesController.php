@@ -36,7 +36,7 @@ class PagesController extends Controller
         // $id = Session::get('id');
         // $privilege = Session::get('privilege');
         
-        return view('pages.home');//, compact('users','id','privilege'));
+        return view('layout');//, compact('users','id','privilege'));
     }
 
     public function login()
@@ -116,6 +116,14 @@ class PagesController extends Controller
         return view('layoutAdmin')->with('JumlahN', $JumlahN)->with('KombinasiKriteria', json_encode($KombinasiKriteria))->with('NamaKriteria', json_encode($nama_kriteria));
         /*return view('layoutAdmin', compact('JumlahN','nama_kriteria'));*/
         // return view('pages.HomeAdmin');
+    }
+
+    public function kriteriaUser(Table_Kriteria $table_kriteria)
+    {
+        $JumlahKriteria = Table_Kriteria::count();
+        $table_kriteria = Table_Kriteria::all();
+
+        return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria));
     }
 }
 ?>

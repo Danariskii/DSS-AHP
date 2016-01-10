@@ -33,29 +33,19 @@
     <link href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
     <!-- jQuery -->
-    <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
+     <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
 
     <script src="{{ asset('js/jquery.js') }}" ></script>
-    <script src="{{ asset('js/jquery-ui.js') }}" ></script>
+    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
 
-    <script src="{{ asset('js/nouislider.min.js') }}" ></script>
-    <script src="{{ asset('js/wNumb.js') }}" ></script>
-    <link href="{{ asset('css/nouislider.min.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('js/jquery-ui.js') }}" ></script>
 
     <script src="{{ asset('jqwidgets/jqxcore.js') }}"  type="text/javascript"></script>
     <script src="{{ asset('jqwidgets/jqxslider.js') }}"  type="text/javascript"></script>
     <script src="{{ asset('jqwidgets/jqxbuttons.js') }}"  type="text/javascript"></script>
     <link href="{{ asset('jqwidgets/styles/jqx.base.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('jqwidgets/styles/jqx.custom.css') }}" rel="stylesheet" type="text/css" />
-
-
-
-    <script src="{{ asset('js/custom.js') }}" ></script>
-
-
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" />
-    
 
     <!-- jquery untuk kebawah -->
     <script src="{{ asset('js/easing.js') }}"></script>
@@ -66,13 +56,108 @@
             $(".scroll").click(function(event)
             {       
                 event.preventDefault();
-                $('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+                $('html,body').animate(
+                    {scrollTop:$(this.hash).offset().top},1000);
             });
         });
     </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <script type="application/x-javascript"> 
+        addEventListener("load", function() 
+            {
+                setTimeout(hideURLbar, 0); }, false);
+                function hideURLbar(){ window.scrollTo(0,1); 
+            } 
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function () 
+    {
+        var JumlahKriteria = '{{$JumlahKriteria}}';
+        var TableKriteria = JSON.parse('{!! ($Table_Kriteria) !!}');
+
+        // console.log(TableKriteria);
+        $('#SubmitBtn').click(function()
+        {
+            // var tugel = document.getElementById('SubmitBtn').text;
+            // // alert(1);
+            // // alert(tugel);
+            // if(tugel == "Save")
+            // {
+            //     // if (document.getElementById('EditBtn').text = "Cancel")
+            //     {
+            //         $(this).switchClass("up","down");
+            //         document.getElementById('SaveBtn').text = "Saved";
+            //     }
+            // }
+            // else
+            // {
+            //     $(this).switchClass("down","up");
+            //     document.getElementById('SaveBtn').text = "Save";
+            // }
+        });
+
+        for (var i = 0; i < JumlahKriteria; i++) 
+        {
+            // alert(i);
+            // for (var j = 1+i; j < NamaKriteria.length ; j++) 
+            {
+                var ni = document.getElementById('grupslider');
+                var namaslider = 'slider'+TableKriteria[i].Nama_Kriteria;
+                var namaPanggilslider = '#slider'+TableKriteria[i].Nama_Kriteria;
+                var namaketeranganmin = 'KetMin'+TableKriteria[i].Nama_Kriteria;
+                var namaketeranganmax = 'KetMax'+TableKriteria[i].Nama_Kriteria;
+                // var namakriteriaA = NamaKriteria[i].Nama_Kriteria;
+                // var namakriteriaB = NamaKriteria[j].Nama_Kriteria;
+
+                var newdiv = document.createElement('div');
+                var divIdName = TableKriteria[i].Nama_Kriteria;
+                newdiv.setAttribute('id',divIdName);
+                newdiv.innerHTML = '<h3>Pilih '+divIdName+' AC <br/> yang diinginkan</h3>'
+                +'<div class="containerValue">'
+                +' <div class="minmax">'
+                +'   <div style="float: left" id="'+namaketeranganmin+'"></div>'
+                +'   <div style="float: right" id="'+namaketeranganmax+'"></div>'
+                +' </div>'
+                +'  <div class="slider" id="'+namaslider+'"></div>'
+                +'</div>';
+                ni.appendChild(newdiv);
+            }
+
+                $(namaPanggilslider).jqxSlider({
+                    height: 30,
+                    width: "90%",
+                    min: 1, 
+                    max: 7, 
+                    step: 1, 
+                    ticksFrequency: 1,  //keterangan
+                    values: [1, 7], 
+                    // tooltip: true,
+                    ticksPosition: 'bottom',
+                    rangeSlider: true, 
+                    mode: 'fixed'       
+                });
+
+                $(namaPanggilslider).on('change', function (event) 
+                {
+                                // var filter = $(this).attr('filter');
+                                // handleSlide(event.args.value);
+                    // console.log(event.args.value['rangeStart']);
+                    if(event.args.value['rangeStart']=='0.5')
+                    {
+                        document.getElementById(namaketeranganmin).innerHTML = '6 Bulan';
+                    }
+                    else
+                    {
+                        document.getElementById(namaketeranganmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'PK';
+                    }
+                    
+                    document.getElementById(namaketeranganmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'PK';
+                });
+        }
+    });
+    </script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -186,68 +271,14 @@
                 <h2><span> </span> Decision Support System</h2>
             </div>
 
-            <h3>Kapasitas</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="KapasitasMin"></div>
-                    <div style="float: right" id="KapasitasMax"></div>
-                </div>
-                <div class="slider" id="sliderKapasitas"></div>
+            <div id="grupslider">
+
             </div>
 
-            <h3>Garansi</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="GaransiMin"></div>
-                    <div style="float: right" id="GaransiMax"></div>
-                </div>
-                <div class="slider" id="sliderGaransi"></div>
+            <div class=" text-center">
+                <a class="Edit-btn" id="SubmitBtn" value="button" type="button">Submit</a>
             </div>
 
-            <h3>Perawatan</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="PerawatanMin"></div>
-                    <div style="float: right" id="PerawatanMax"></div>
-                </div>
-                <div class="slider" id="sliderPerawatan"></div>
-            </div>
-
-            <h3>Fitur</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="FiturMin"></div>
-                    <div style="float: right" id="FiturMax"></div>
-                </div>
-                <div class="slider" id="sliderFitur"></div>
-            </div>
-
-            <h3>Listrik</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="ListrikMin"></div>
-                    <div style="float: Right" id="ListrikMax"></div>
-                </div>
-                <div class="slider" id="sliderListrik"></div>
-            </div>
-
-            <h3>Desain</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="DesainMin"></div>
-                    <div style="float: right" id="DesainMax"></div>
-                </div>
-                <div class="slider" id="sliderDesain"></div>
-            </div>
-
-            <h3>Ketahanan</h3>
-            <div class="containerValue">
-                <div class="minmax">
-                    <div style="float: left" id="KetahananMin"></div>
-                    <div style="float: right" id="KetahananMax"></div>
-                </div>
-                <div class="slider" id="sliderKetahanan"></div>
-            </div>
         </div>
 
     <!-- end Decision Support System -->

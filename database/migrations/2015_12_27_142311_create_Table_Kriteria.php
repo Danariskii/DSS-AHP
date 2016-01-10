@@ -16,7 +16,7 @@ class CreateTableKriteria extends Migration
             $table->increments('id');
 
             $table->string('Nama_Kriteria');
-            $table->integer('Nilai_Bobot_Kriteria')->nullable();
+            $table->string('Nilai_Bobot_Kriteria')->nullable();
             $table->integer('Jumlah_SubKriteria')->nullable();
 
             // $table->timestamps();
