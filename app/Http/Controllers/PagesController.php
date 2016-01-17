@@ -103,6 +103,7 @@ class PagesController extends Controller
         $KombinasiKriteria;
         // $nama_kriteria = DB::select('SELECT Nama_Kriteria from table_kriteria');
         $nama_kriteria = Table_Kriteria::all();
+        $SubKriteria;
 
         for ($i=0; $i<$table_kriteria; $i++) 
         {
@@ -123,7 +124,22 @@ class PagesController extends Controller
         $JumlahKriteria = Table_Kriteria::count();
         $table_kriteria = Table_Kriteria::all();
 
-        return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria));
+        for ($j=0; $j<$JumlahKriteria; $j++)
+        {
+            $SubKriteria[$j] = DB::select("SELECT DISTINCT ".$table_kriteria[$j]['Nama_Kriteria']." FROM table_ac ");
+        }
+        // dd($SubKriteria);
+
+        return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria))->with('SubKriteria', json_encode($SubKriteria));
+    }
+
+    public function postValue(Request $request)
+    {
+        $input = $request->input();
+        
+        $value[] = $input["value"];
+
+        
     }
 }
 ?>

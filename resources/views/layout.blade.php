@@ -72,45 +72,88 @@
     </script>
 
     <script type="text/javascript">
+    var insialisasi = (function ($){
+
+        var addEventListener = function (){
+            $('.jqx-slider').on('change',function (event) {
+                var filter = $(this).attr('filter');
+                handleSlide(filter, event.args.value);
+                // alert(filter);
+            });
+        };
+
+        var handleSlide = function (option, value)
+        {
+            // filterItems(updateFilter(option, value));
+            setLabelValue(this[option + 'Slider'], option, value);
+        };
+
+        var setLabelValue = function (slider, option, value)
+        {
+
+        };
+
+        var filterItems = function (filter)
+        {
+
+        };
+
+        return {
+            init: function (){
+                addEventListener();
+            }
+        }
+
+    } ($));
+
     $(document).ready(function () 
     {
         var JumlahKriteria = '{{$JumlahKriteria}}';
         var TableKriteria = JSON.parse('{!! ($Table_Kriteria) !!}');
+        var SubKriteria = JSON.parse('{!! ($SubKriteria) !!}');
+        var arraySlider = [];
+        var value = [];
 
-        // console.log(TableKriteria);
+        // console.log(SubKriteria[0][1].Capasitas);
+        // console.log(TableKriteria[1].Jumlah_SubKriteria);
         $('#SubmitBtn').click(function()
         {
-            // var tugel = document.getElementById('SubmitBtn').text;
-            // // alert(1);
-            // // alert(tugel);
-            // if(tugel == "Save")
-            // {
-            //     // if (document.getElementById('EditBtn').text = "Cancel")
-            //     {
-            //         $(this).switchClass("up","down");
-            //         document.getElementById('SaveBtn').text = "Saved";
-            //     }
-            // }
-            // else
-            // {
-            //     $(this).switchClass("down","up");
-            //     document.getElementById('SaveBtn').text = "Save";
-            // }
+            var min = $(this).attr('id');
+            var Kmin = 'KetMin' + min;
+            var Kmax = 'KetMax' + min;
+            // var ket = event.args.value['rangeStart'] +' dan '+ event.args.value['rangeEnd'];
+            for (var i = 0; i < JumlahKriteria; i++)
+            {
+                value[i] = $(arraySlider[i]).jqxSlider('getValue');
+                // console.log(value[i])
+            };
+
+            jQuery.ajax({
+                url: "{{URL::to('postValue')}}",
+                data: {value: value},
+                type : "POST"
+            });
         });
 
         for (var i = 0; i < JumlahKriteria; i++) 
         {
             // alert(i);
             // for (var j = 1+i; j < NamaKriteria.length ; j++) 
-            {
+            // {
                 var ni = document.getElementById('grupslider');
                 var namaslider = 'slider'+TableKriteria[i].Nama_Kriteria;
                 var namaPanggilslider = '#slider'+TableKriteria[i].Nama_Kriteria;
                 var namaketeranganmin = 'KetMin'+TableKriteria[i].Nama_Kriteria;
                 var namaketeranganmax = 'KetMax'+TableKriteria[i].Nama_Kriteria;
+                var kriteria = TableKriteria[i].Nama_Kriteria;
+                arraySlider[i] = '#slider'+TableKriteria[i].Nama_Kriteria;
+                // var Satuan_SubKriteria = TableKriteria[i].Satuan_SubKriteria;
+
+                var JumlahSubKriteria = TableKriteria[i].Jumlah_SubKriteria;
                 // var namakriteriaA = NamaKriteria[i].Nama_Kriteria;
                 // var namakriteriaB = NamaKriteria[j].Nama_Kriteria;
-
+                // console.log(TableKriteria[i].Satuan_SubKriteria);
+                
                 var newdiv = document.createElement('div');
                 var divIdName = TableKriteria[i].Nama_Kriteria;
                 newdiv.setAttribute('id',divIdName);
@@ -123,39 +166,69 @@
                 +'  <div class="slider" id="'+namaslider+'"></div>'
                 +'</div>';
                 ni.appendChild(newdiv);
-            }
+            // }
 
                 $(namaPanggilslider).jqxSlider({
                     height: 30,
                     width: "90%",
                     min: 1, 
-                    max: 7, 
+                    max: JumlahSubKriteria, 
                     step: 1, 
                     ticksFrequency: 1,  //keterangan
-                    values: [1, 7], 
+                    values: [1, JumlahSubKriteria], 
                     // tooltip: true,
                     ticksPosition: 'bottom',
                     rangeSlider: true, 
-                    mode: 'fixed'       
+                    mode: 'fixed'      
                 });
-
+// console.log(namaPanggilslider);
                 $(namaPanggilslider).on('change', function (event) 
                 {
-                                // var filter = $(this).attr('filter');
-                                // handleSlide(event.args.value);
-                    // console.log(event.args.value['rangeStart']);
-                    if(event.args.value['rangeStart']=='0.5')
+                    // console.log($(this).attr('id'))
+                    var min = $(this).attr('id').replace("slider", "");
+                    var Kmin = 'KetMin' + min;
+                    var Kmax = 'KetMax' + min;
+                    console.log(min);
+
+                    if(min=='Capasitas')
                     {
-                        document.getElementById(namaketeranganmin).innerHTML = '6 Bulan';
+                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'PK';
+                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'PK';
                     }
-                    else
+                    else if(min=="Garansi")
                     {
-                        document.getElementById(namaketeranganmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'PK';
+                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'Tahun';
+                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'Tahun';
                     }
-                    
-                    document.getElementById(namaketeranganmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'PK';
+                    else if(min=="Perawatan")
+                    {
+                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'rawat';
+                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'rawat';
+                    }
+                    else if(min=="Fitur")
+                    {
+                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'gitur';
+                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'fitur';
+                    }
+                    else if(min=="Listrik")
+                    {
+                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'Watt';
+                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'Watt';
+                    }
+                    else if(min=="Desain")
+                    {
+                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'desain';
+                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'desain';
+                    }
+                    else if(min=="Ketahanan")
+                    {
+                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'tahan';
+                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'tahan';
+                    }
                 });
         }
+
+        // insialisasi.init();
     });
     </script>
 

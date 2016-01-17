@@ -30,7 +30,7 @@ post('admin', 'PagesController@submit');
 // post('kriteria', 'PagesController@kriteria');
 Route::get('admin', 'PagesController@kriteria');
 
-
+Route::post('postValue', 'PagesController@postValue');
 
 
 // post('login', "PagesController@login");
