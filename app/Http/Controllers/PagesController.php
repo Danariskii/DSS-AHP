@@ -19,6 +19,9 @@ use App\Table_Matrix_Kriteria;
 use App\Table_SubKriteria;
 use App\Table_Matrix_SubKriteria;
 
+use App\Table_AC;
+use App\Table_Bobot_AC;
+
 class PagesController extends Controller
 {
 
@@ -133,12 +136,186 @@ class PagesController extends Controller
         return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria))->with('SubKriteria', json_encode($SubKriteria));
     }
 
-    public function postValue(Request $request)
+    public function postValue(Request $request, Table_Bobot_AC $table_bobot_ac, Table_AC $table_ac)
     {
         $input = $request->input();
-        
-        $value[] = $input["value"];
 
+        $JumlahKriteria = Table_Kriteria::count();
+        
+        $value = $input['value'];
+
+        $matrix ;
+
+        $Perawatan;
+        if ($value[2]==1)
+        {
+            $Perawatan ='Praktis';
+        }
+        elseif ($value[2]==2)
+        {
+            $Perawatan ='Berkala';
+        }
+        elseif ($value[2]==3)
+        {
+            $Perawatan ='Intens';
+        }
+
+        $Fitur;
+        if ($value[3]==1)
+        {
+            $Fitur ='Tidak Ada Fitur';
+        }
+        elseif ($value[3]==2)
+        {
+            $Fitur ='Simple';
+        }
+        elseif ($value[3]==3)
+        {
+            $Fitur ='Full Fitur';
+        }
+
+        $Desain;
+        if ($value[5]==1)
+        {
+            $Desain ='Standard';
+        }
+        elseif ($value[5]==2)
+        {
+            $Desain ='Simple';
+        }
+        elseif ($value[5]==3)
+        {
+            $Desain ='Stylish';
+        }
+
+        $Ketahanan;
+        if ($value[6]==1)
+        {
+            $Ketahanan ='Standard';
+        }
+        elseif ($value[6]==2)
+        {
+            $Ketahanan ='Menengah';
+        }
+        elseif ($value[6]==3)
+        {
+            $Ketahanan ='Kuat';
+        }
+
+        // if ($value[0]["rangeStart"]==$value[0]["rangeEnd"]) 
+        // {
+        //     dd($value);
+            
+        // }
+
+        // $alternatif = DB::select("SELECT id FROM table_ac WHERE Capasitas>=".$value[0]["rangeStart"]." AND Capasitas<=".$value[0]["rangeEnd"]." AND Garansi>=".$value[1]["rangeStart"]." AND Garansi<=".$value[1]["rangeEnd"]." AND Perawatan='".$Perawatan."' AND Fitur='".$Fitur."' AND Listrik>=".$value[4]["rangeStart"]." AND Listrik<=".$value[4]["rangeEnd"]." AND Desain='".$Desain."' AND Ketahanan='".$Ketahanan."'");
+        //SELECT * FROM `table_ac` WHERE `Capasitas`>=1/2 AND `Capasitas`<=2 AND `Garansi`>=2 AND `Garansi` <=3 AND `Perawatan`='Praktis' AND `Fitur`='Simple' AND `Listrik`>=320 AND `Listrik`<=528 AND `Desain`='Stylish' AND `Ketahanan`='Menengah'
+
+        $table_ac = Table_AC::WHERE('Capasitas','>=',$value[0]["rangeStart"])
+                            // ->WHERE('Capasitas','<=',$value[0]["rangeEnd"])
+                            ->WHERE('Garansi','>=',$value[1]["rangeStart"])
+                            // ->WHERE('Garansi','<=',$value[1]["rangeEnd"])
+                            ->WHERE('Perawatan','=', $Perawatan)
+                            ->WHERE('Fitur', '=', $Fitur)
+                            ->WHERE('Listrik','>=',$value[4]["rangeStart"])
+                            // ->WHERE('Listrik','<=',$value[4]["rangeEnd"])
+                            ->WHERE('Desain','=',$Desain)
+                            ->WHERE('Ketahanan','=',$Ketahanan)->get(array('id'));
+
+        $kriteria = Table_Kriteria::get(array('Nama_Kriteria'));
+
+        $namaKrit;
+        $matrixBesar;
+        $SumArray;
+        $SumArraySemuaKriteria;
+        $matrixNormalisasi;
+        $matrixNormalisasiBesar;
+        $SumArrayHorizontal;
+        $SumArrayHorizontalBesar;
+
+        for ($k=0; $k<$JumlahKriteria ; $k++) 
+        { 
+            $namaKrit[$k] = $kriteria[$k]["Nama_Kriteria"];
+        }
+
+        // $jumlahmatrix = count($alternatif);
+        $jumlahmatrix = count($table_ac);
+
+        for ($o=0; $o<$jumlahmatrix ; $o++)
+        {
+            $kor[$o] = $table_ac[$o]["id"];
+        }
+
+        $table_bobot_ac = Table_Bobot_AC::find($kor);
+        
+        for ($L=0; $L < $JumlahKriteria; $L++)
+        {
+            $p=0;
+            for ($i=0; $i < $jumlahmatrix; $i++) 
+            {
+                for ($j=0; $j < $jumlahmatrix; $j++)
+                { 
+                    if ($i==$j)
+                    {
+                        $matrix[$i][$j] = pow(1,2);
+                    }
+                    else if($i<$j)
+                    {
+                        $matrix[$i][$j] = pow($table_bobot_ac[$p][$namaKrit[$L]],2);
+                        $matrix[$j][$i] = pow(1/($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                        $p = $p + 1;
+                    }
+                }
+            }
+
+            for ($g=0; $g<$jumlahmatrix ; $g++)
+            {
+                $SumArray[$g] = 0;
+                for ($f=0; $f<$jumlahmatrix ; $f++) 
+                {
+                    $SumArray[$g] = $SumArray[$g]+$matrix[$f][$g];
+                }
+            }
+
+            for ($t=0; $t<$jumlahmatrix ; $t++) 
+            { 
+                for ($r=0; $r<$jumlahmatrix ; $r++) 
+                { 
+                    $matrixNormalisasi[$r][$t] = $matrix[$r][$t] / $SumArray[$t];
+                }
+            }
+
+            for ($h=0; $h<$jumlahmatrix ; $h++)
+            {
+                $SumArrayHorizontal[$h] = 0;
+                for ($b=0; $b<$jumlahmatrix ; $b++)
+                {
+                    $SumArrayHorizontal[$h] = $SumArrayHorizontal[$h]+$matrixNormalisasi[$h][$b];
+                }
+            }
+
+            for ($w=0; $w < ; $w++) 
+            { 
+                
+            }
+
+            $SumArrayHorizontalBesar[$L] = $SumArrayHorizontal;
+
+            $matrixNormalisasiBesar[$L] = $matrixNormalisasi;
+
+            $SumArraySemuaKriteria[$L] = $SumArray;
+
+            $matrixBesar[$L] = $matrix;
+        }
+
+        // $p = [ [1,0,0] , [0,1,0], [0,0,1] ];
+
+        // $q = [ [4,5,6] , [0,1,0], [1,0,1] ];
+
+        // dd($table_bobot_ac[0]["Capasitas"]);
+        // dd($namaKriteria);
+        // dd($table_bobot_ac);
+        dd($SumArrayHorizontalBesar);
         
     }
 }

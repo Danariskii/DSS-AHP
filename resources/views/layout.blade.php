@@ -72,6 +72,12 @@
     </script>
 
     <script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+    });
+
     var insialisasi = (function ($){
 
         var addEventListener = function (){
@@ -118,14 +124,14 @@
         // console.log(TableKriteria[1].Jumlah_SubKriteria);
         $('#SubmitBtn').click(function()
         {
-            var min = $(this).attr('id');
-            var Kmin = 'KetMin' + min;
-            var Kmax = 'KetMax' + min;
+            var token = $('meta[name="csrf-token"]').attr('content');
+            // var min = $(this).attr('id');
+            // var Kmin = 'KetMin' + min;
+            // var Kmax = 'KetMax' + min;
             // var ket = event.args.value['rangeStart'] +' dan '+ event.args.value['rangeEnd'];
             for (var i = 0; i < JumlahKriteria; i++)
             {
                 value[i] = $(arraySlider[i]).jqxSlider('getValue');
-                // console.log(value[i])
             };
 
             jQuery.ajax({
@@ -133,6 +139,7 @@
                 data: {value: value},
                 type : "POST"
             });
+            // console.log(value)
         });
 
         for (var i = 0; i < JumlahKriteria; i++) 
@@ -168,31 +175,90 @@
                 ni.appendChild(newdiv);
             // }
 
-                $(namaPanggilslider).jqxSlider({
-                    height: 30,
-                    width: "90%",
-                    min: 1, 
-                    max: JumlahSubKriteria, 
-                    step: 1, 
-                    ticksFrequency: 1,  //keterangan
-                    values: [1, JumlahSubKriteria], 
-                    // tooltip: true,
-                    ticksPosition: 'bottom',
-                    rangeSlider: true, 
-                    mode: 'fixed'      
-                });
-// console.log(namaPanggilslider);
+                if (kriteria=='Capasitas')
+                {
+                    $(namaPanggilslider).jqxSlider({
+                        height: 30,
+                        width: "90%",
+                        min: 1/2,
+                        max: 3,
+                        step: 1/2,
+                        ticksFrequency: 1/2,  //keterangan
+                        values: [1/2, 3], 
+                        ticksPosition: 'bottom',
+                        rangeSlider: true,
+                        showRange:true,
+                        mode: 'fixed'      
+                    });
+                }
+                else if (kriteria=='Garansi')
+                {
+                    $(namaPanggilslider).jqxSlider({
+                        height: 30,
+                        width: "90%",
+                        min: 1, 
+                        max: JumlahSubKriteria, 
+                        step: 1, 
+                        ticksFrequency: 1,  //keterangan
+                        values: [1, JumlahSubKriteria], 
+                        ticksPosition: 'bottom',
+                        rangeSlider: true,
+                        showRange:true,
+                        mode: 'fixed'      
+                    });
+                }
+
+                else if (kriteria=='Listrik')
+                {
+                    $(namaPanggilslider).jqxSlider({
+                        height: 30,
+                        width: "90%",
+                        min: 250,
+                        max: 2500, 
+                        step: 250, 
+                        ticksFrequency: 250,  //keterangan
+                        values: [500, 2500], 
+                        ticksPosition: 'bottom',
+                        rangeSlider: true,
+                        showRange:true,
+                        mode: 'fixed'      
+                    });
+                }
+                else
+                {
+                    $(namaPanggilslider).jqxSlider({
+                        height: 30,
+                        width: "90%",
+                        min: 1, 
+                        max: JumlahSubKriteria, 
+                        step: 1, 
+                        ticksFrequency: 1,  //keterangan
+                        values: [JumlahSubKriteria], 
+                        ticksPosition: 'bottom',
+                        rangeSlider: false,
+                        showRange: false,
+                        mode: 'fixed'      
+                    });
+                }
+
                 $(namaPanggilslider).on('change', function (event) 
                 {
                     // console.log($(this).attr('id'))
                     var min = $(this).attr('id').replace("slider", "");
                     var Kmin = 'KetMin' + min;
                     var Kmax = 'KetMax' + min;
-                    console.log(min);
+                    // console.log(min);
 
                     if(min=='Capasitas')
                     {
-                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'PK';
+                        if (event.args.value['rangeStart']==1/2)
+                        {
+                            document.getElementById(Kmin).innerHTML = '1/2' + ' ' + 'PK';
+                        }
+                        else
+                        {
+                            document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'PK';
+                        }
                         document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'PK';
                     }
                     else if(min=="Garansi")
@@ -202,13 +268,33 @@
                     }
                     else if(min=="Perawatan")
                     {
-                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'rawat';
-                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'rawat';
+                        if (event.args.value==1)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Praktis atau Mudah';
+                        }
+                        else if(event.args.value==2)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Berkala';
+                        }
+                        else if(event.args.value==3)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Intens';
+                        }
                     }
                     else if(min=="Fitur")
                     {
-                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'gitur';
-                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'fitur';
+                        if (event.args.value==1)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Tidak Ada Fitur';
+                        }
+                        else if(event.args.value==2)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Simple atau Memenuhi Kebutuhan';
+                        }
+                        else if(event.args.value==3)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Full Fitur';
+                        }
                     }
                     else if(min=="Listrik")
                     {
@@ -217,13 +303,33 @@
                     }
                     else if(min=="Desain")
                     {
-                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'desain';
-                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'desain';
+                        if (event.args.value==1)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Standard';
+                        }
+                        else if(event.args.value==2)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Simple';
+                        }
+                        else if(event.args.value==3)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Stylish';
+                        }
                     }
                     else if(min=="Ketahanan")
                     {
-                        document.getElementById(Kmin).innerHTML = event.args.value['rangeStart'] + ' ' + 'tahan';
-                        document.getElementById(Kmax).innerHTML = event.args.value['rangeEnd'] + ' ' + 'tahan';
+                        if (event.args.value==1)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Standard atau Low';
+                        }
+                        else if(event.args.value==2)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Middle';
+                        }
+                        else if(event.args.value==3)
+                        {
+                            document.getElementById(Kmin).innerHTML = 'Kuat atau Bandel';
+                        }
                     }
                 });
         }
