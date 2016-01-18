@@ -8,7 +8,7 @@ class Table_Kriteria extends Model
 {
     protected $table = 'table_kriteria';
 
-    protected $fillable = ['Nama_Kriteria', 'Nilai_Bobot_Kriteria', 'Jumlah_SubKriteria'];
+    protected $fillable = ['Nama_Kriteria', 'Nilai_Bobot_Kriteria', 'Jumlah_SubKriteria', 'Satuan_SubKriteria'];
 
     protected $hidden = ['password', 'remember_token'];
 }

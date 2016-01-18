@@ -136,11 +136,13 @@ class PagesController extends Controller
         return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria))->with('SubKriteria', json_encode($SubKriteria));
     }
 
-    public function postValue(Request $request, Table_Bobot_AC $table_bobot_ac, Table_AC $table_ac)
+    public function postValue(Request $request, Table_Bobot_AC $table_bobot_ac, Table_AC $table_ac, Table_Kriteria $table_kriteria)
     {
         $input = $request->input();
 
         $JumlahKriteria = Table_Kriteria::count();
+
+        // $JumlahKriteria = 8;
         
         $value = $input['value'];
 
@@ -225,6 +227,7 @@ class PagesController extends Controller
         $kriteria = Table_Kriteria::get(array('Nama_Kriteria'));
 
         $namaKrit;
+        $matrixPure;
         $matrixBesar;
         $SumArray;
         $SumArraySemuaKriteria;
@@ -232,13 +235,24 @@ class PagesController extends Controller
         $matrixNormalisasiBesar;
         $SumArrayHorizontal;
         $SumArrayHorizontalBesar;
+        $PowKedua;
+        $PowKeduaBesar;
+        $SumPowKedua;
+        $SumPowKeduaBesar;
+        $Wtemporary;
+        $WtemporaryBesar;
+        $CCI;
+        $Wj;
+        $Wjbesar;
+        $Beta;
+        $neW;
+        $neWBesar;
 
         for ($k=0; $k<$JumlahKriteria ; $k++) 
         { 
             $namaKrit[$k] = $kriteria[$k]["Nama_Kriteria"];
         }
 
-        // $jumlahmatrix = count($alternatif);
         $jumlahmatrix = count($table_ac);
 
         for ($o=0; $o<$jumlahmatrix ; $o++)
@@ -247,6 +261,11 @@ class PagesController extends Controller
         }
 
         $table_bobot_ac = Table_Bobot_AC::find($kor);
+
+        // $jumlahmatrix = 8;
+        // $fak;
+
+        // $table_bobot_ac = array(5,3,7,6,6,-3,-4,-3,5,3,3,-5,-7,6,3,4,6,-5,-3,-4,-7,-8,-2,-5,-6,-5,-6,-2);
         
         for ($L=0; $L < $JumlahKriteria; $L++)
         {
@@ -257,16 +276,37 @@ class PagesController extends Controller
                 { 
                     if ($i==$j)
                     {
+                        $matrixPure[$i][$j] = 1;
                         $matrix[$i][$j] = pow(1,2);
                     }
                     else if($i<$j)
                     {
-                        $matrix[$i][$j] = pow($table_bobot_ac[$p][$namaKrit[$L]],2);
-                        $matrix[$j][$i] = pow(1/($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                        // $matrix[$i][$j] = pow($table_bobot_ac[$p][$namaKrit[$L]],2);
+                        // $matrix[$j][$i] = pow(1/($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                        // $check = explode("-",$table_bobot_ac[$p]);
+                        $check = explode("-",$table_bobot_ac[$p]);
+                        if ($check[0]=="")
+                        {
+                            $matrixPure[$i][$j] = 1/($table_bobot_ac[$p][$namaKrit[$L]]);
+                            $matrixPure[$j][$i] = $table_bobot_ac[$p][$namaKrit[$L]]*1;
+
+                            $matrix[$i][$j] = pow((1/$table_bobot_ac[$p][$namaKrit[$L]]),2);
+                            $matrix[$j][$i] = pow(($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                        }
+                        else
+                        {
+                            $matrixPure[$i][$j] = $table_bobot_ac[$p][$namaKrit[$L]];
+                            $matrixPure[$j][$i] = 1/($table_bobot_ac[$p][$namaKrit[$L]]);
+
+                            $matrix[$i][$j] = pow(($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                            $matrix[$j][$i] = pow(1/($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                        }
                         $p = $p + 1;
                     }
                 }
             }
+
+
 
             for ($g=0; $g<$jumlahmatrix ; $g++)
             {
@@ -277,11 +317,16 @@ class PagesController extends Controller
                 }
             }
 
+            for ($s=0; $s <$jumlahmatrix ; $s++) 
+            { 
+                $SumArray[$s] = sqrt($SumArray[$s]);
+            }
+
             for ($t=0; $t<$jumlahmatrix ; $t++) 
             { 
-                for ($r=0; $r<$jumlahmatrix ; $r++) 
+                for ($r=0; $r<$jumlahmatrix ; $r++)
                 { 
-                    $matrixNormalisasi[$r][$t] = $matrix[$r][$t] / $SumArray[$t];
+                    $matrixNormalisasi[$r][$t] = $matrixPure[$r][$t] / $SumArray[$t];
                 }
             }
 
@@ -294,29 +339,65 @@ class PagesController extends Controller
                 }
             }
 
-            for ($w=0; $w < ; $w++) 
+            for ($q=0; $q<$jumlahmatrix ; $q++) 
             { 
-                
+                $PowKedua[$q] = pow($SumArrayHorizontal[$q],2);
             }
 
-            $SumArrayHorizontalBesar[$L] = $SumArrayHorizontal;
+            $SumPowKedua = 0;
+            for ($x=0; $x<$jumlahmatrix ; $x++) 
+            { 
+                $SumPowKedua = $SumPowKedua + $PowKedua[$x];
+            }
 
-            $matrixNormalisasiBesar[$L] = $matrixNormalisasi;
+            for ($z=0; $z<$jumlahmatrix ; $z++) 
+            { 
+                $Wtemporary[$z] = ($SumArrayHorizontal[$z])/(sqrt($SumPowKedua));
+            }
 
-            $SumArraySemuaKriteria[$L] = $SumArray;
+            $Wj = 0;
+            for ($v=0; $v<$jumlahmatrix ; $v++) 
+            { 
+                $Wj = $Wj + $Wtemporary[$v];
+            }
+
+            for ($BB=0; $BB<$jumlahmatrix ; $BB++) 
+            { 
+                $neW[$BB] = $Wtemporary[$BB]/$Wj;
+            }
+
+            for ($ak=0; $ak <$jumlahmatrix; $ak++) 
+            { 
+                for ($akh=0; $akh <$jumlahmatrix ; $akh++) 
+                { 
+                    // $neW * bobot kriteria
+                }
+            }
 
             $matrixBesar[$L] = $matrix;
+
+            $SumArraySemuaKriteria[$L] = $SumArray;
+            
+            $matrixNormalisasiBesar[$L] = $matrixNormalisasi;
+            
+            $SumArrayHorizontalBesar[$L] = $SumArrayHorizontal;
+
+            $PowKeduaBesar[$L] = $PowKedua;
+            
+            $SumPowKeduaBesar[$L] = sqrt($SumPowKedua);
+
+            $WtemporaryBesar[$L] = $Wtemporary;
+
+            $CCI[$L] = (sqrt($SumPowKedua))/$jumlahmatrix;
+
+            $Wjbesar[$L] = $Wj;
+
+            $Beta[$L] = 1/$Wj;
+
+            $neWBesar[$L] = $neW;
         }
-
-        // $p = [ [1,0,0] , [0,1,0], [0,0,1] ];
-
-        // $q = [ [4,5,6] , [0,1,0], [1,0,1] ];
-
-        // dd($table_bobot_ac[0]["Capasitas"]);
-        // dd($namaKriteria);
-        // dd($table_bobot_ac);
-        dd($SumArrayHorizontalBesar);
         
+        dd($neWBesar); 
     }
 }
 ?>
