@@ -154,14 +154,440 @@ body {
 
 .List-box 
 {
-    padding-top: 5em;
-    padding-bottom: 42em;
+    padding-top: 1em;
+    padding-bottom: 2em;
+    font-family: 'Helvetica Neue', arial, sans-serif;
 }
 
 .List-box h3
 {
     padding-top: 0em;
 }
+
+.controls{
+  padding: 2%;
+  background: #333;
+  color: #eee;
+}
+
+label{
+  font-weight: 300;
+  margin: 0 .4em 0 0;
+}
+
+button{
+  font-family: 'Helvetica Neue', arial, sans-serif;
+  display: inline-block;
+  padding: .4em .8em;
+  background: #666;
+  border: 0;
+  color: #ddd;
+  font-size: 16px;
+  font-weight: 300;
+  border-radius: 0.3em;
+  -webkit-border-radius: 0.3em;
+  -moz-border-radius: 0.3em;
+  -o-border-radius: 0.3em;
+  margin: 0.3em;
+  cursor: pointer;
+}
+
+button.active{
+  background: #68b8c4;
+}
+
+button:focus{
+  outline: 0 none;
+}
+
+button + label{
+  margin-left: 1em;
+}
+
+.containerList{
+  padding: 2% 2%;
+  text-align: justify;
+  font-size: 0.1px;
+  background: #FFF;
+  
+  -webkit-backface-visibility: hidden;
+}
+
+.containerList:after{
+  content: '';
+  display: inline-block;
+  width: 100%;
+}
+
+.containerList .mix,
+.containerList .gap{
+  display: inline-block;
+  width: 18%;
+}
+
+.containerList .mix{
+  text-align: left;
+  /*background: #03899c;*/
+  background: #FFF;
+  display: none;
+}
+
+.containerList .mix.category-1{
+  border-top: 2px solid limegreen;
+}
+
+.containerList .mix.category-2{
+  border-top: 2px solid yellow;
+}
+
+.containerList .mix:after{
+  content: attr(data-myorder);
+  color: white;
+  font-size: 16px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 4% 4%;
+  font-weight: 700;
+}
+
+.containerList .mix:before{
+  content: '';
+  display: inline-block;
+  padding-top: 10%;
+}
+
+
+/*-----------------------------dari template--*/
+[class*="span"] {
+  float: left;
+  min-height: 1px;
+  margin-left: 20px;
+}
+
+.span4 {
+  width: 300px;
+}
+
+.span6 {
+  width: 500px;
+}
+
+input.span4,
+textarea.span4,
+.uneditable-input.span4 {
+  width: 286px;
+}
+
+.table td.span4,
+.table th.span4 {
+  float: none;
+  width: 284px;
+  margin-left: 0;
+}
+
+/*---------------------------------------start thumbail*/
+/*bootstrap*/
+.row-fluid {
+  width: 100%;
+  *zoom: 1;
+}
+
+.row-fluid:before,
+.row-fluid:after {
+  display: table;
+  line-height: 0;
+  content: "";
+}
+
+.row-fluid:after {
+  clear: both;
+}
+
+.row-fluid [class*="span"] {
+  display: block;
+  float: left;
+  width: 100%;
+  min-height: 30px;
+  margin-left: 2.127659574468085%;
+  *margin-left: 2.074468085106383%;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.row-fluid [class*="span"]:first-child {
+  margin-left: 0;
+}
+
+.row-fluid .controls-row [class*="span"] + [class*="span"] {
+  margin-left: 2.127659574468085%;
+}
+
+.row-fluid .span6 {
+  width: 48.93617021276595%;
+  *width: 48.88297872340425%;
+}
+
+.row-fluid .span4 {
+  width: 31.914893617021278%;
+  *width: 31.861702127659576%;
+}
+
+[class*="span"].hide,
+.row-fluid [class*="span"].hide {
+  display: none;
+}
+
+[class*="span"].pull-right,
+.row-fluid [class*="span"].pull-right {
+  float: right;
+}
+/*-----------------------------------------------------------------end row fluid-*/
+.thumbnails {
+  margin-left: -20px;
+  list-style: none;
+  *zoom: 1;
+}
+
+.thumbnails:before,
+.thumbnails:after {
+  display: table;
+  line-height: 0;
+  content: "";
+}
+
+.thumbnails:after {
+  clear: both;
+}
+
+.row-fluid .thumbnails {
+  margin-left: 0;
+}
+
+.thumbnails > li {
+  float: left;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.thumbnail {
+    width:100%;
+    height:100%;
+    padding:0;
+    overflow: hidden;
+    position: relative;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    text-align:center;
+    /*background: #191a1c;*/
+    display: block;
+  padding: 4px;
+  line-height: 1px;
+  /*border: 1px dotted #FFF;*/
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+     -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+  -webkit-transition: all 0.2s ease-in-out;
+     -moz-transition: all 0.2s ease-in-out;
+       -o-transition: all 0.2s ease-in-out;
+          transition: all 0.2s ease-in-out;
+}
+    
+a.thumbnail:hover,
+a.thumbnail:focus {
+  /*border-color: #0088cc;*/
+  border-color: #FFF;
+  /*-webkit-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+     -moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
+          box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);*/
+}
+
+.thumbnail > img {
+  display: block;
+  max-width: 100%;
+  /*background-color: #ADEBFF;*/
+  background-color: #FFF;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.thumbnail .caption {
+  padding: 9px;
+  color: #555555;
+}
+
+/*-from style-*/
+
+.thumbnail .more {
+    display:block;
+    z-index:4;
+    position:absolute;
+    top:-100px;
+    left:50%;
+    margin:0 auto;
+    margin-left:-41px;
+    width:80px;
+    height:80px;
+    font-size:40px;
+    color:#fff;
+    text-decoration:none;
+    line-height: 70px;
+    text-align: center;
+}
+.thumbnail:hover .more {
+    top:40%;
+    margin-top:-40px;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3 s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.thumbnail h3, 
+.thumbnail p {
+    margin:0;
+    padding:0;
+    position:relative;
+    z-index:4;
+}
+.thumbnail h3 {
+    color: #FECE1A;
+    margin-top:10px;
+    font-size:20px;
+}
+.thumbnail > p {
+    padding-bottom:20px;
+}
+.thumbnail .mask {
+    opacity:0.5;
+    filter: alpha(opacity=85);
+    top:100%;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#181A1C;
+    position:absolute;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -o-transition: all 0.2 s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+.thumbnail:hover .mask {
+    top:0;
+}
+/*-end from style-*/
+/*---------------------------------------end thumbail*/
+
+/*-------------------------portofolio*/
+.single-project {
+    /*margin-bottom:30px;*/
+    width: 60%;
+    /*background:#181A1C;*/
+    position: relative;
+    margin: auto;
+    vertical-align: center;
+}
+.single-project img {
+    width:100%;
+}
+.project-description {
+    text-align: left;
+}
+.project-description p {
+    padding-left:0;
+    font-size: 14px;
+}
+.project-title {
+    background:#181A1C;
+    margin-top:15px;
+    border-bottom:1px solid #FECE1A;
+}
+.project-title h3 {
+    float:left;
+    margin-top:0;
+    padding-top:0.5em;
+    width:80%;
+    padding-left:1em;
+}
+
+.project-title p {
+    float:left;
+    padding-left:1em;
+    color:#FFF;
+    font-size: 14px !important;
+}
+.project-title .close {
+    color: #FECE1A;
+    margin-top:10px;
+}
+.project-info span, .project-title h3 {
+    color:#FECE1A;
+}
+.project-info {
+    background:#181A1C;
+    font-weight:100;
+    padding:1em 0.5em;
+    font-size: 14px !important;
+}
+.project-info span {
+    width: 80px;
+    display: inline-block;
+}
+.project-info div {
+    margin-bottom:10px;
+    color:#FFF;
+}
+.close {
+    float: right;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}
+#portfolio-grid .mix {
+    opacity: 0;
+    display: none;
+}
+
+
+/*-----------------------------------end----------*/
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "arial";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+     
+  /* fix buttons height, for twitter bootstrap */
+  
+ 
+  /* you can be more comfortable with increased icons size */
+   /*font-size: 120%; */
+
+
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+
+.icon-plus:before { content: 'i'; } /* '' */
+.icon-cancel:before { content: 'X'; } /* '' */
+
+/*-----------------------------------end css template-*/
 
 /*----------------------------------end-----gallery---AC--------------------------------------------------------------------*/
 
@@ -310,6 +736,13 @@ body {
 .question-box h3
 {
     padding-top: 0em;
+}
+
+.resizable(@direction: vertical) {
+  /*// Options: horizontal, vertical, both*/
+  resize: @direction;
+  /*// Safari fix*/
+  overflow: auto;
 }
 
 /*------------------------------------------end----questioner-------------------------------------------------------------*/

@@ -33,6 +33,15 @@ Route::get('admin', 'PagesController@kriteria');
 Route::post('postValue', 'PagesController@postValue');
 Route::get('postValue', 'PagesController@postValue');
 
+post('questionnaire', "PagesController@questionnaire");
+
+// Route::get('welcome', 'PagesController@goHasil');
+// Route::get('welcome', function(){
+// 	return view('layoutHasil');
+// });
+
+// Route::get('layoutHasil', '')
+
 
 // post('login', "PagesController@login");
 

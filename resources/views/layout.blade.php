@@ -35,9 +35,14 @@
     <!-- jQuery -->
      <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
 
+
     <script src="{{ asset('js/jquery.js') }}" ></script>
+    <!-- // <script src="{{ asset('js/app.js') }}" ></script> -->
     <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
+    <!-- <link href="{{ asset('css/bootstrapP.css') }}" rel="stylesheet" type="text/css" /> -->
+    <!-- <link href="{{ asset('css/bootstrap-responsive.css') }}" rel="stylesheet" type="text/css" /> -->
+    <link href="{{ asset('css/animate.css') }}" rel="stylesheet" type="text/css" />
 
     <script src="{{ asset('js/jquery-ui.js') }}" ></script>
 
@@ -49,6 +54,9 @@
 
     <!-- jquery untuk kebawah -->
     <script src="{{ asset('js/easing.js') }}"></script>
+
+     <script src="{{ asset('js/jquery.mixitup.js') }}" ></script>
+     <script src="{{ asset('js/jquery.mixitup.min.js') }}" ></script>
 
     <script type="text/javascript">
         jQuery(document).ready(function($) 
@@ -117,11 +125,59 @@
         var JumlahKriteria = '{{$JumlahKriteria}}';
         var TableKriteria = JSON.parse('{!! ($Table_Kriteria) !!}');
         var SubKriteria = JSON.parse('{!! ($SubKriteria) !!}');
+        // var List_AC = JSON.parse('{!! ($Table_AC) !!}');
         var arraySlider = [];
         var value = [];
 
+
+        // console.log(List_AC[3].Merek);
         // console.log(SubKriteria[0][1].Capasitas);
         // console.log(TableKriteria[1].Jumlah_SubKriteria);
+
+        //Function for show or hide portfolio desctiption.
+        $.fn.showHide = function (options) {
+            var defaults = {
+                speed: 1000,
+                easing: '',
+                changeText: 0,
+                showText: 'Show',
+                hideText: 'Hide'
+            };
+            var options = $.extend(defaults, options);
+            $(this).click(function () {
+                $('.toggleDiv').slideUp(options.speed, options.easing);
+                var toggleClick = $(this);
+                var toggleDiv = $(this).attr('rel');
+                $(toggleDiv).slideToggle(options.speed, options.easing, function () {
+                    if (options.changeText == 1) {
+                        $(toggleDiv).is(":visible") ? toggleClick.text(options.hideText) : toggleClick.text(options.showText);
+                    }
+                });
+                return false;
+            });
+        };
+
+        //Initial Show/Hide portfolio element.
+        $('div.toggleDiv').hide();
+        $('.show_hide').showHide({
+            speed: 500,
+            changeText: 0,
+            showText: 'View',
+            hideText: 'Close'
+        });
+
+        $('#ContainerGallery').mixItUp({
+            load:{
+                filter: 'all',
+                sort:'random'
+                // page: 1
+            },
+            controls:{
+                toggleFilterButton: true,
+                toggleLogic: 'and'
+            }
+        });
+
         $('#SubmitBtn').click(function()
         {
             var token = $('meta[name="csrf-token"]').attr('content');
@@ -134,19 +190,18 @@
                 value[i] = $(arraySlider[i]).jqxSlider('getValue');
             };
 
-            jQuery.ajax({
-                url: "{{URL::to('postValue')}}",
-                data: {value: value},
-                type : "POST"
-            });
-            // console.log(value)
+            // jQuery.ajax({
+            //     url: "{{URL::to('postValue')}}",
+            //     data: {value: value},
+            //     type : "POST"
+            // });
+            
+            value = JSON.stringify(value);
+            window.location.href = "postValue?value="+value;
         });
 
         for (var i = 0; i < JumlahKriteria; i++) 
         {
-            // alert(i);
-            // for (var j = 1+i; j < NamaKriteria.length ; j++) 
-            // {
                 var ni = document.getElementById('grupslider');
                 var namaslider = 'slider'+TableKriteria[i].Nama_Kriteria;
                 var namaPanggilslider = '#slider'+TableKriteria[i].Nama_Kriteria;
@@ -173,7 +228,6 @@
                 +'  <div class="slider" id="'+namaslider+'"></div>'
                 +'</div>';
                 ni.appendChild(newdiv);
-            // }
 
                 if (kriteria=='Capasitas')
                 {
@@ -217,7 +271,7 @@
                         max: 2500, 
                         step: 250, 
                         ticksFrequency: 250,  //keterangan
-                        values: [500, 2500], 
+                        values: [250, 2500], 
                         ticksPosition: 'bottom',
                         rangeSlider: true,
                         showRange:true,
@@ -398,7 +452,7 @@
                 <div class="main-menu text-center">
                     <h1>Decision Support System for <br/> Air Conditioner</h1>
                     <span>Built with Love</span>
-                    <a class="slide-btn scroll" href="#dss">Start</a>
+                    <input class="slide-btn scroll" id="StartBtn" value="Start" type="submit"  href="#dss"/>
                 </div>
 
                 <div class="features-grids text-center">
@@ -434,11 +488,103 @@
     </div>
 
     <!-- List Air Conditioner -->
-
         <div id="list" class="List-box">
             <div class="head text-center">
-                <h3><span> </span> List Merek Air Conditioner</h3>
+                <h3><span> </span> List Air Conditioner</h3>
+                <div id="grupTombol">
+                    <button class="button sort" data-sort="random">Random</button>
+                    <button class="button sort" data-sort="myorder:asc">ASC</button>
+                    <button class="button filter" data-filter="all">All</button>
+                    @foreach($tombolgallery as $AC)
+                        <?php
+                            $temp = $AC->Merek;
+                            $inisial = explode(' ',$AC->Merek);
+                        ?>
+                        <button class="button filter" data-filter=".{{$inisial[0]}}">{{$AC->Merek}}</button>
+                    @endforeach
+                </div>
             </div>
+
+                <h3><span> </span> List Air Conditioner in maintenance</h3>
+----------------------------------------------------------------------------------------------------
+
+            <div id="ContainerGallery" class="containerList">
+            <?php $i=0 ?>
+            @foreach($Table_AC as $AC)
+                <?php 
+                    $model = $AC->Model;
+                    $fnr = str_replace(" ","",$model);
+                    $namafotoT = 'images/'.$fnr.'.png';
+                ?>
+                    <div id="Model{{$i}}" class="toggleDiv row-fluid single-project">
+                        <div class="span6">
+                            <!-- <img src="{{ asset('images/GWC05NA(SplitWallTypeStandard).png') }}" alt="project 9"> -->
+                            <img src={{ asset($namafotoT) }} alt="project 9">
+                        </div>
+                        <div class="span6">
+                            <div class="project-description">
+                                <div class="project-title clearfix">
+                                    <span class="show_hide close">
+                                        <i class="icon-cancel"></i>
+                                    </span>
+                                    <h3>{{$AC->Merek}}</h3>
+                                     <p>{{$AC->Model}}</p>
+                                </div>
+                                <div class="project-info">
+                                    <div>
+                                        <span>Capasitas</span>{{$AC->Capasitas}}</div>
+                                    <div>
+                                        <span>Garansi</span>{{$AC->Garansi}}</div>
+                                    <div>
+                                        <span>Ketahanan</span>{{$AC->Ketahanan}}</div>
+                                    <div>
+                                        <span>Listrik</span>{{$AC->Merek}}</div>
+                                    <div>
+                                        <span>Fitur</span>{{$AC->Fitur}}</div>
+                                    <div>
+                                        <span><br/>Harga</span>{{$AC->Harga}}</div>
+                                </div>
+                                <!-- <p>I learned that we can do anything, but we can't do everything... at least not at the same time. So think of your priorities not in terms of what activities you do, but when you do them. Timing is everything.</p> -->
+                            </div>
+                        </div>
+                    </div>
+                <?php $i=$i+1 ?>
+            @endforeach
+
+            <?php $j=0 ?>
+            @foreach($Table_AC as $AC)
+                <?php
+                    $temp = $AC->Merek;
+                    $inisial = explode(' ',$AC->Merek);
+
+                    $model = $AC->Model;
+                    $fnr = str_replace(" ","",$model);
+                    $namafotoT = 'images/'.$fnr.'.png';
+                    // $namafotoT = "asset('images/".$fnr.".png')";
+                    // $namafotoT = html_entity_decode($namafotoT);
+                ?>
+                    <ul>
+                        <li class="span4 mix {{$inisial[0]}}" data-myorder="{{$j}}">
+                            <div class="thumbnail">
+                                <!-- <img src= {{$namafotoT}} alt="project 9"> -->
+                                <!-- <img src="{{ asset('images/GWC05NA(SplitWallTypeStandard).png') }}" alt="project 9"> -->
+                                <img src={{ asset($namafotoT) }} alt="project 9">
+                                <a href= "#single-project" class="show_hide more" rel="#Model{{$j}}">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <!-- <h3>{{ $namafotoT }}</h3> -->
+                                <!-- <h3>{{ $inisial[0] }}{{$j}}</h3> -->
+                                <!-- <p>{{$AC->Model}}</p> -->
+                                <div class="mask"></div>
+                            </div>
+                        </li>
+                    </ul>
+                <?php
+                    $j=$j+1
+                ?>
+            @endforeach
+            </div>
+
         </div>
 
     <!-- End List Air Conditioner -->
@@ -449,13 +595,12 @@
             <div class="head text-center">
                 <h2><span> </span> Decision Support System</h2>
             </div>
-
             <div id="grupslider">
 
             </div>
 
             <div class=" text-center">
-                <a class="Edit-btn" id="SubmitBtn" value="button" type="button">Submit</a>
+                <input class="Edit-btn" id="SubmitBtn" value="Submit" type="submit"/>
             </div>
 
         </div>
@@ -465,8 +610,94 @@
     <!--Start Questionnare-->
 
         <div id="quest" class="question-box">
-            <div class="head text-center">
-                <h3><span> </span> Questionnare </h3>
+            <div>    
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title head text-center">Questionnaire</h3>
+                            </div>
+                            <div class="panel-body">
+
+                            <?php 
+                                $Q=0;
+                                $N=0;
+                            ?>
+                            
+                            {!! Form::open(array('url' => 'questionnaire')) !!}
+
+
+                            @foreach($Questionnaire as $Quest)
+
+                            <div>
+                            <?php
+                                $Q=$Quest->id
+                            ?>
+                            <fieldset>
+                                <label>
+                                    {{$Quest->id}}.  {{$Quest->Pertanyaan}} <br/>
+                                </label>
+
+                                <div class="radio">
+                                    <label>
+                                        <?php $N=$N+1 ?>
+                                        <input type="radio" name="Pertanyaan{{$Q}}" id="ss{{$Q}}" value="Quest{{$N}}" />
+                                        Sangat Setuju
+                                    </label>
+                                </div>
+
+                                <div class="radio">
+                                    <label>
+                                        <?php $N=$N+1 ?>
+                                        <input type="radio" name="Pertanyaan{{$Q}}" id="st{{$Q}}" value="Quest{{$N}}" />
+                                        Setuju
+                                    </label>
+                                </div>
+
+                                <div class="radio">
+                                    <label>
+                                        <?php $N=$N+1 ?>
+                                        <input type="radio" name="Pertanyaan{{$Q}}" id="n{{$Q}}" value="Quest{{$N}}" />
+                                        Netral
+                                    </label>
+                                </div>
+
+                                <div class="radio">
+                                    <label>
+                                        <?php $N=$N+1 ?>
+                                        <input type="radio" name="Pertanyaan{{$Q}}" id="ts{{$Q}}" value="Quest{{$N}}" />
+                                        Tidak Setuju
+                                    </label>
+                                </div>
+
+                                <div class="radio">
+                                    <label>
+                                        <?php $N=$N+1 ?>
+                                        <input type="radio" name="Pertanyaan{{$Q}}" id="sts{{$Q}}" value="Quest{{$N}}" />
+                                        Sangat Tidak Setuju
+                                    </label>
+                                </div>
+
+                            </fieldset>
+                            </div>
+                                @endforeach
+
+                                <textarea class="form-control resizable" rows="3" placeholder="Kritik atau Saran" ></textarea>
+                                <br/>
+                                
+                                    
+                                        <!-- Change this to a button or input when using this as a form -->
+                                        <input type="submit" class="btn btn-lg btn-success btn-block" value="Submit" name="submit">
+                               {!! Form::close() !!}
+                               @if($errors->has())
+                                <p style="color:red">
+                                    <?php print_r($errors->first(0)) ?>
+                                </p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

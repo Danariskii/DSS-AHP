@@ -22,6 +22,8 @@ use App\Table_Matrix_SubKriteria;
 use App\Table_AC;
 use App\Table_Bobot_AC;
 
+use App\Table_Questionnaire;
+
 class PagesController extends Controller
 {
 
@@ -122,10 +124,15 @@ class PagesController extends Controller
         // return view('pages.HomeAdmin');
     }
 
-    public function kriteriaUser(Table_Kriteria $table_kriteria)
+    public function kriteriaUser(Table_Kriteria $table_kriteria, Table_AC $table_ac, Table_Questionnaire $table_questionnaire)
     {
         $JumlahKriteria = Table_Kriteria::count();
         $table_kriteria = Table_Kriteria::all();
+        $table_ac = Table_AC::all();
+        $tombolgallery = DB::select("SELECT DISTINCT Merek FROM table_ac");
+        $table_questionnaire = Table_Questionnaire::all();
+
+        // dd($tombolgallery);
 
         for ($j=0; $j<$JumlahKriteria; $j++)
         {
@@ -133,18 +140,39 @@ class PagesController extends Controller
         }
         // dd($SubKriteria);
 
-        return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria))->with('SubKriteria', json_encode($SubKriteria));
+        return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria))->with('SubKriteria', json_encode($SubKriteria))->with('Table_AC',($table_ac))->with('tombolgallery',$tombolgallery)->with('Questionnaire', $table_questionnaire);
+    }
+
+    public function questionnaire(Request $request)
+    {
+    //     $i=1
+    //     for ($i=0; $i < ; $i++) 
+    //     {
+    //         $Pertanyaan = $request->get('Pertanyaan'.$i);
+    //         $i=$i+1;
+            $input = $request->input();       
+            dd(count($input));
+
+        // }
+
+        // dd($username);
+        // $password = $request->get('password');
     }
 
     public function postValue(Request $request, Table_Bobot_AC $table_bobot_ac, Table_AC $table_ac, Table_Kriteria $table_kriteria)
     {
         $input = $request->input();
+        //dd($request);
 
         $JumlahKriteria = Table_Kriteria::count();
+
+        // $bobot_kriteria = Table_Kriteria::get(array('Nama_Kriteria','Nilai_Bobot_Kriteria'));
 
         // $JumlahKriteria = 8;
         
         $value = $input['value'];
+        $value = json_decode($value);
+        // dd($value[0]->rangeStart);
 
         $matrix ;
 
@@ -213,20 +241,23 @@ class PagesController extends Controller
         // $alternatif = DB::select("SELECT id FROM table_ac WHERE Capasitas>=".$value[0]["rangeStart"]." AND Capasitas<=".$value[0]["rangeEnd"]." AND Garansi>=".$value[1]["rangeStart"]." AND Garansi<=".$value[1]["rangeEnd"]." AND Perawatan='".$Perawatan."' AND Fitur='".$Fitur."' AND Listrik>=".$value[4]["rangeStart"]." AND Listrik<=".$value[4]["rangeEnd"]." AND Desain='".$Desain."' AND Ketahanan='".$Ketahanan."'");
         //SELECT * FROM `table_ac` WHERE `Capasitas`>=1/2 AND `Capasitas`<=2 AND `Garansi`>=2 AND `Garansi` <=3 AND `Perawatan`='Praktis' AND `Fitur`='Simple' AND `Listrik`>=320 AND `Listrik`<=528 AND `Desain`='Stylish' AND `Ketahanan`='Menengah'
 
-        $table_ac = Table_AC::WHERE('Capasitas','>=',$value[0]["rangeStart"])
+        $table_ac = Table_AC::WHERE('Capasitas','>=',$value[0]->rangeStart)
                             // ->WHERE('Capasitas','<=',$value[0]["rangeEnd"])
-                            ->WHERE('Garansi','>=',$value[1]["rangeStart"])
+                            ->WHERE('Garansi','>=',$value[1]->rangeStart)
                             // ->WHERE('Garansi','<=',$value[1]["rangeEnd"])
                             ->WHERE('Perawatan','=', $Perawatan)
                             ->WHERE('Fitur', '=', $Fitur)
-                            ->WHERE('Listrik','>=',$value[4]["rangeStart"])
+                            ->WHERE('Listrik','>=',$value[4]->rangeStart)
                             // ->WHERE('Listrik','<=',$value[4]["rangeEnd"])
                             ->WHERE('Desain','=',$Desain)
                             ->WHERE('Ketahanan','=',$Ketahanan)->get(array('id'));
 
-        $kriteria = Table_Kriteria::get(array('Nama_Kriteria'));
+        dd($table_ac);
+
+        $kriteria = Table_Kriteria::get(array('Nama_Kriteria','Nilai_Bobot_Kriteria'));
 
         $namaKrit;
+        $bobotKrit;
         $matrixPure;
         $matrixBesar;
         $SumArray;
@@ -247,10 +278,19 @@ class PagesController extends Controller
         $Beta;
         $neW;
         $neWBesar;
+        $NilaiDikaliBobot;
+        $NilaiDikaliBobotBesar;
+        $Ranking;
+        $RankingBesar;
 
         for ($k=0; $k<$JumlahKriteria ; $k++) 
         { 
             $namaKrit[$k] = $kriteria[$k]["Nama_Kriteria"];
+        }
+
+        for ($BK=0; $BK <$JumlahKriteria ; $BK++) 
+        { 
+            $bobotKrit[$BK] = $kriteria[$BK]["Nilai_Bobot_Kriteria"];
         }
 
         $jumlahmatrix = count($table_ac);
@@ -258,6 +298,11 @@ class PagesController extends Controller
         for ($o=0; $o<$jumlahmatrix ; $o++)
         {
             $kor[$o] = $table_ac[$o]["id"];
+        }
+
+        for ($al=0; $al < $jumlahmatrix ; $al++) 
+        { 
+            $RankingAlternatif[$al] = 0;
         }
 
         $table_bobot_ac = Table_Bobot_AC::find($kor);
@@ -366,13 +411,21 @@ class PagesController extends Controller
                 $neW[$BB] = $Wtemporary[$BB]/$Wj;
             }
 
-            for ($ak=0; $ak <$jumlahmatrix; $ak++) 
+            for ($ak=0; $ak<$jumlahmatrix; $ak++) 
             { 
-                for ($akh=0; $akh <$jumlahmatrix ; $akh++) 
-                { 
-                    // $neW * bobot kriteria
-                }
+                $NilaiDikaliBobot[$ak] = $neW[$ak] * ($bobotKrit[$L]);
+                $RankingAlternatif[$ak] = $RankingAlternatif[$ak] + $NilaiDikaliBobot[$ak];
             }
+
+            // $RankingAlternatifBesar[$L] = $RankingAlternatif;
+
+            for($rak=0; $rak<$jumlahmatrix; $rak++)
+            {
+                $urutan[$rak] = $RankingAlternatif[$rak]." ".$kor[$rak];
+            }
+
+            $urutanBesar[$L] = $urutan;
+            dd($urutanBesar);
 
             $matrixBesar[$L] = $matrix;
 
@@ -395,9 +448,44 @@ class PagesController extends Controller
             $Beta[$L] = 1/$Wj;
 
             $neWBesar[$L] = $neW;
+            
+            $NilaiDikaliBobotBesar[$L] = $NilaiDikaliBobot;
         }
         
-        dd($neWBesar); 
+        // dd($NilaiDikaliBobotBesar[1][0]);
+        // dd($NilaiDikaliBobotBesar);
+        // dd($NilaiDikaliBobot);
+        // dd($RankingBesar);
+        // dd($RankingAlternatif);
+        // dd($NilaiDikaliBobotBesar);
+        // dd($table_ac);
+
+        $RankingSort = array_reverse(array_sort($RankingAlternatif, function($value)
+        {
+                    return sprintf('%s', $value[0]);
+        }));
+        // dd($RankingSort);
+
+        $HasilAC = Table_AC::WHERE('Capasitas','>=',$value[0]->rangeStart)
+                            // ->WHERE('Capasitas','<=',$value[0]["rangeEnd"])
+                            ->WHERE('Garansi','>=',$value[1]->rangeStart)
+                            // ->WHERE('Garansi','<=',$value[1]["rangeEnd"])
+                            ->WHERE('Perawatan','=', $Perawatan)
+                            ->WHERE('Fitur', '=', $Fitur)
+                            ->WHERE('Listrik','>=',$value[4]->rangeStart)
+                            // ->WHERE('Listrik','<=',$value[4]["rangeEnd"])
+                            ->WHERE('Desain','=',$Desain)
+                            ->WHERE('Ketahanan','=',$Ketahanan)->get();
+        // dd($HasilAC);
+
+        // dd($RankingSort);
+        return view('pages.Hasil')->with('HasilAC', ($HasilAC))->with('RankingAlternatif', ($RankingAlternatif))->with('RankingSort', json_encode($RankingSort));
+        // return view('pages.login');
     }
+
+    // public function goHasil()
+    // {
+    //     return view('pages.Hasil');
+    // }
 }
 ?>

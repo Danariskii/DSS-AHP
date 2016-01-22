@@ -226,7 +226,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <!-- <a class="navbar-brand" href="{{ URL::to('/') }}">PHI - Admin v1.0</a> -->
+
+                    <a class="navbar-brand" href="{{ URL::to('/') }}">ADMIN</a>
+
             </div>
             <!-- /.navbar-header -->
 
@@ -260,7 +262,7 @@
             <div class="header" style=" background-image:url('{{ asset('images/header-bg.jpg') }}'); position:relative">
                 <div class="main-menu text-center">
                     <h1>Decision Support System for <br/> Air Conditioner</h1>
-                    <span>Built with Love Admin</span>
+                    <span>Built with Love </span>
                     <a class="slide-btn scroll" href="#dss">Start</a>
                 </div>
 
