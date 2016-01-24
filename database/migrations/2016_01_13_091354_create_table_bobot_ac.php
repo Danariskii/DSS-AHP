@@ -17,7 +17,7 @@ class CreateTableBobotAc extends Migration
             $table->integer('id_AC')->unsigned();
             $table->foreign('id_AC')->references('id')->on('Table_AC');
 
-            $table->string('Model')->nullable();
+            $table->string('ModelFoto')->nullable();
 
             $table->integer('Capasitas')->nullable();
             $table->integer('Garansi')->nullable();
@@ -26,8 +26,10 @@ class CreateTableBobotAc extends Migration
             $table->integer('Listrik')->nullable();
             $table->integer('Desain')->nullable();
             $table->integer('Ketahanan')->nullable();
-
             
+            $table->float('Final_Bobot')->nullable();
+
+            $table->Timestamps();
         });
     }
 

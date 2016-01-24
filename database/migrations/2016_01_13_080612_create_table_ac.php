@@ -19,7 +19,7 @@ class CreateTableAc extends Migration
             $table->string('Model')->nullable();
             $table->string('Harga')->nullable();
 
-            $table->string('Capasitas')->nullable();
+            $table->float('Capasitas')->nullable();
             $table->string('Garansi')->nullable();
             $table->string('Perawatan')->nullable();
             $table->string('Fitur')->nullable();

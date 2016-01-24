@@ -624,6 +624,19 @@ a.thumbnail:focus {
     margin-top: 0.5em;
 }
 
+.Back-btn{
+    color: #fff;
+    background: #FD3B01;
+    font-size: 1.2em;
+    padding: 0.7em 1.8em;
+    display: inline-block;
+    border-radius: 0.3em;
+    -webkit-border-radius: 0.3em;
+    -moz-border-radius: 0.3em;
+    -o-border-radius: 0.3em;
+    margin-top: 0.5em;
+}
+
 .Edit-btn:hover{
     background:#FAA823;
     color:#FFF;
@@ -729,7 +742,7 @@ a.thumbnail:focus {
 .question-box
 {
     padding-top: 5em;
-    padding-bottom: 42em;
+    padding-bottom: 5em;
     background: #FFF;
 }
 
@@ -1126,3 +1139,5 @@ table.dataTable thead .sorting:after {
 .panel-yellow a:hover {
     color: #df8a13;
 }
+
+

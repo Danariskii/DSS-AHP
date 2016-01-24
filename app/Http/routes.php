@@ -34,7 +34,7 @@ Route::post('postValue', 'PagesController@postValue');
 Route::get('postValue', 'PagesController@postValue');
 
 post('questionnaire', "PagesController@questionnaire");
-
+post('/', "PagesController@redirect");
 // Route::get('welcome', 'PagesController@goHasil');
 // Route::get('welcome', function(){
 // 	return view('layoutHasil');

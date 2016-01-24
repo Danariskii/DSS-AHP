@@ -15,10 +15,7 @@ class CreateHistoryInput extends Migration
         Schema::create('table_history', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('Hasil_Rekomendasi_1')->nullable();
-            $table->string('Hasil_Rekomendasi_2')->nullable();
-            $table->string('Hasil_Rekomendasi_3')->nullable();
-            $table->string('Hasil_Rekomendasi_4')->nullable();
+            $table->string('Hasil_Rekomendasi')->nullable();
 
             $table->string('Jumlah_Kriteria')->nullable();
             $table->string('Jumlah_Alternatif')->nullable();
@@ -31,7 +28,7 @@ class CreateHistoryInput extends Migration
             $table->string('Desain')->nullable();
             $table->string('Ketahanan')->nullable();
 
-            $table->nullableTimestamps();
+            $table->Timestamps();
         });
     }
 

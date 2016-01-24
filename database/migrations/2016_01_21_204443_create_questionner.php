@@ -23,9 +23,8 @@ class CreateQuestionner extends Migration
             $table->string('Jumlah_Sangat_Tidak_Setuju')->nullable();
 
             $table->string('Jumlah_Koresponden')->nullable();
-            $table->string('Saran')->nullable();
 
-            $table->nullableTimestamps();
+            $table->Timestamps();
 
         });
     }

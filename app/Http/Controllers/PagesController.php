@@ -23,6 +23,8 @@ use App\Table_AC;
 use App\Table_Bobot_AC;
 
 use App\Table_Questionnaire;
+use App\Table_Saran;
+use App\Table_History;
 
 class PagesController extends Controller
 {
@@ -35,25 +37,25 @@ class PagesController extends Controller
 
 	public function index()
     {
-         if(Session::has('privilege')=='Admin') return view('pages.home');
+        if(Session::has('privilege')=='Admin') return redirect('admin');;
 
         // $users = DB::table('users')->get();
         // $id = Session::get('id');
         // $privilege = Session::get('privilege');
-        
         return view('layout');//, compact('users','id','privilege'));
     }
 
     public function login()
     {
-    	return view('pages.login');
+
+        return view('pages.login');
     }
 
     public function submit(Request $request)
     {
         $username = $request->get('Username');
         $password = $request->get('password');
-        // $password = md5($password);
+        $password = md5($password);
 
         $row = DB::select('SELECT * FROM users WHERE name = ? AND password = ?', [$username, $password]);
 
@@ -143,28 +145,80 @@ class PagesController extends Controller
         return view('layout')->with('JumlahKriteria', $JumlahKriteria)->with('Table_Kriteria', json_encode($table_kriteria))->with('SubKriteria', json_encode($SubKriteria))->with('Table_AC',($table_ac))->with('tombolgallery',$tombolgallery)->with('Questionnaire', $table_questionnaire);
     }
 
-    public function questionnaire(Request $request)
+    public function questionnaire(Request $request, Table_Questionnaire $questionnaire, Table_Saran $table_saran)
     {
-    //     $i=1
-    //     for ($i=0; $i < ; $i++) 
-    //     {
-    //         $Pertanyaan = $request->get('Pertanyaan'.$i);
-    //         $i=$i+1;
             $input = $request->input();       
-            dd(count($input));
 
-        // }
+            // dd(($input['KritikOrSaran'])); tinggal bikin table untuk saran
+            // dd(($input["2"]));
+            $Saran = new Table_Saran;
 
-        // dd($username);
-        // $password = $request->get('password');
+            for ($Q=1; $Q<((count($input))-2) ; $Q++) 
+            {
+                $jawabannya = $input[$Q];
+                $checkJawaban = explode("_",$jawabannya);
+
+                $Quest = Table_Questionnaire::find($checkJawaban[1]);
+
+                if ($checkJawaban[0] == 'SangatSetuju')
+                {
+                    $temp = $Quest->Jumlah_Sangat_Setuju;
+                    $Quest->Jumlah_Sangat_Setuju =$temp+1;
+                    $Quest->save();
+                    $temp = 0;
+                }
+                elseif ($checkJawaban[0] == 'Setuju')
+                {
+                    $temp = $Quest->Jumlah_Setuju;
+                    $Quest->Jumlah_Setuju =$temp+1;
+                    $Quest->save();
+                    $temp = 0;
+                }
+                elseif ($checkJawaban[0] == 'Netral')
+                {
+                    $temp = $Quest->Jumlah_Netral;
+                    $Quest->Jumlah_Netral =$temp+1;
+                    $Quest->save();
+                    $temp = 0;
+                }
+                elseif ($checkJawaban[0] == 'TidakSetuju')
+                {
+                    $temp = $Quest->Jumlah_Tidak_Setuju;
+                    $Quest->Jumlah_Tidak_Setuju =$temp+1;
+                    $Quest->save();
+                    $temp = 0;
+                }
+                elseif ($checkJawaban[0] == 'SangatTidakSetuju')
+                {
+                    $temp = $Quest->Jumlah_Sangat_Tidak_Setuju;
+                    $Quest->Jumlah_Sangat_Tidak_Setuju =$temp+1;
+                    $Quest->save();
+                    $temp = 0;
+                }
+                $ALL='JwbPertanyaan'.$Q;
+                $Saran->$ALL = $checkJawaban[0];
+                $Saran->save();
+            };
+
+            $Saran->Saran = $input['KritikOrSaran'];
+            $Saran->save();
+
+            $temp = $Quest->Jumlah_Koresponden;
+            $Quest->Jumlah_Koresponden=$temp+1;
+            $Quest->save();
+            $temp = 0;
+
+            return redirect('users');
     }
 
-    public function postValue(Request $request, Table_Bobot_AC $table_bobot_ac, Table_AC $table_ac, Table_Kriteria $table_kriteria)
+    public function postValue(Request $request, Table_Bobot_AC $table_bobot_ac, Table_AC $table_ac, Table_Kriteria $table_kriteria, Table_History $table_history)
     {
         $input = $request->input();
         //dd($request);
 
         $JumlahKriteria = Table_Kriteria::count();
+
+        $table_ac = Table_AC::get();
 
         // $bobot_kriteria = Table_Kriteria::get(array('Nama_Kriteria','Nilai_Bobot_Kriteria'));
 
@@ -173,8 +227,21 @@ class PagesController extends Controller
         $value = $input['value'];
         $value = json_decode($value);
         // dd($value[0]->rangeStart);
+        // dd($value);
 
         $matrix ;
+        
+        $array_bobot_suspect;
+
+        $StartRangeCapasitasInputUser = $value[0]->rangeStart;
+        $EndRangeCapasitasInputUser = $value[0]->rangeEnd;
+
+        $StartRangeGaransiInputUser = $value[1]->rangeStart;
+        $EndRangeGaransiInputUser = $value[1]->rangeEnd;
+
+        $StartRangeListrikInputUser = $value[4]->rangeStart;
+        $EndRangeListrikInputUser = $value[4]->rangeEnd;
+
 
         $Perawatan;
         if ($value[2]==1)
@@ -232,27 +299,53 @@ class PagesController extends Controller
             $Ketahanan ='Kuat';
         }
 
-        // if ($value[0]["rangeStart"]==$value[0]["rangeEnd"]) 
-        // {
-        //     dd($value);
-            
-        // }
 
-        // $alternatif = DB::select("SELECT id FROM table_ac WHERE Capasitas>=".$value[0]["rangeStart"]." AND Capasitas<=".$value[0]["rangeEnd"]." AND Garansi>=".$value[1]["rangeStart"]." AND Garansi<=".$value[1]["rangeEnd"]." AND Perawatan='".$Perawatan."' AND Fitur='".$Fitur."' AND Listrik>=".$value[4]["rangeStart"]." AND Listrik<=".$value[4]["rangeEnd"]." AND Desain='".$Desain."' AND Ketahanan='".$Ketahanan."'");
-        //SELECT * FROM `table_ac` WHERE `Capasitas`>=1/2 AND `Capasitas`<=2 AND `Garansi`>=2 AND `Garansi` <=3 AND `Perawatan`='Praktis' AND `Fitur`='Simple' AND `Listrik`>=320 AND `Listrik`<=528 AND `Desain`='Stylish' AND `Ketahanan`='Menengah'
+        $count = count($table_ac);
+        $idFilter;
+        $idFilterCheck;
+        $RankingAlternatifBesar;
+        // $idFilterListrik;
 
-        $table_ac = Table_AC::WHERE('Capasitas','>=',$value[0]->rangeStart)
-                            // ->WHERE('Capasitas','<=',$value[0]["rangeEnd"])
-                            ->WHERE('Garansi','>=',$value[1]->rangeStart)
-                            // ->WHERE('Garansi','<=',$value[1]["rangeEnd"])
-                            ->WHERE('Perawatan','=', $Perawatan)
-                            ->WHERE('Fitur', '=', $Fitur)
-                            ->WHERE('Listrik','>=',$value[4]->rangeStart)
-                            // ->WHERE('Listrik','<=',$value[4]["rangeEnd"])
-                            ->WHERE('Desain','=',$Desain)
-                            ->WHERE('Ketahanan','=',$Ketahanan)->get(array('id'));
+        $ItunganArr = 0;
+        for ($Cap=0; $Cap<$count; $Cap++)
+        {
+            if (($table_ac[$Cap]['Capasitas']) >= $StartRangeCapasitasInputUser AND $table_ac[$Cap]['Capasitas'] <= ($EndRangeCapasitasInputUser)) 
+            {
+                preg_match_all('!\d+!', $table_ac[$Cap]['Garansi'], $ThnGaransi);
 
-        dd($table_ac);
+                if ($ThnGaransi[0][0] >= $StartRangeGaransiInputUser AND $ThnGaransi[0][0] <= ($EndRangeGaransiInputUser))
+                {
+                    preg_match_all('!\d+!', $table_ac[$Cap]['Listrik'], $BesarListrik);
+
+                    if ($BesarListrik[0][0] >= $StartRangeListrikInputUser AND $BesarListrik[0][0] <= $EndRangeListrikInputUser)
+                    {
+                        $checkPerawatan = explode(".",$table_ac[$Cap]['Perawatan']);
+                        $checkFitur = explode(".",$table_ac[$Cap]['Fitur']);
+                        if ($Perawatan==$checkPerawatan[0])
+                        {
+                            $idFilter[$ItunganArr] = $table_ac[$Cap]['id'];
+                            $ItunganArr = $ItunganArr + 1;
+                        }    
+                        elseif ($Fitur==$checkFitur[0])
+                        {
+                            $idFilter[$ItunganArr] = $table_ac[$Cap]['id'];
+                            $ItunganArr = $ItunganArr + 1;
+                        }
+                        elseif ($Desain==$table_ac[$Cap]['Desain'])
+                        {
+                            $idFilter[$ItunganArr] = $table_ac[$Cap]['id'];
+                            $ItunganArr = $ItunganArr + 1;
+                        }
+                        elseif ($Ketahanan==$table_ac[$Cap]['Ketahanan']) 
+                        {
+                            $idFilter[$ItunganArr] = $table_ac[$Cap]['id'];
+                            $ItunganArr = $ItunganArr + 1;
+                        }
+                    }
+                }
+            }
+        }
+        // dd($ItunganArr);
 
         $kriteria = Table_Kriteria::get(array('Nama_Kriteria','Nilai_Bobot_Kriteria'));
 
@@ -283,73 +376,219 @@ class PagesController extends Controller
         $Ranking;
         $RankingBesar;
 
+        $jumlahmatrix = count($idFilter);
+        $RankingAlternatif = array();
+        // dd($idFilter);
+        
         for ($k=0; $k<$JumlahKriteria ; $k++) 
         { 
             $namaKrit[$k] = $kriteria[$k]["Nama_Kriteria"];
+            $bobotKrit[$k] = $kriteria[$k]["Nilai_Bobot_Kriteria"];
         }
 
-        for ($BK=0; $BK <$JumlahKriteria ; $BK++) 
-        { 
-            $bobotKrit[$BK] = $kriteria[$BK]["Nilai_Bobot_Kriteria"];
-        }
+        $table_ac_Eksekusi = Table_AC::find($idFilter);
 
-        $jumlahmatrix = count($table_ac);
-
-        for ($o=0; $o<$jumlahmatrix ; $o++)
+        for ($BSK=0; $BSK<$jumlahmatrix ; $BSK++) 
         {
-            $kor[$o] = $table_ac[$o]["id"];
+            $PembobotanKriDB = Table_Bobot_AC::firstOrCreate(['id_AC'=>$idFilter[$BSK]]);
+            
+            $fnr = str_replace(" ","",$table_ac_Eksekusi[$BSK]['Model']);
+            $namafotoT = 'images/'.$fnr.'.png';
+
+            $PembobotanKriDB->id_AC = $idFilter[$BSK];
+            $PembobotanKriDB->ModelFoto = $namafotoT;
+            
+            $bobotCapasitas = $table_ac_Eksekusi[$BSK]['Capasitas'];
+
+            preg_match_all('!\d+!', $table_ac_Eksekusi[$BSK]['Garansi'], $ThnG);
+            $bobotGaransi = $ThnG[0][0];
+
+            preg_match_all('!\d+!', $table_ac_Eksekusi[$BSK]['Listrik'], $BListrik);
+            $bobotListrik = $BListrik[0][0];
+
+            $checkPerawatani = explode(".",$table_ac_Eksekusi[$BSK]['Perawatan']);
+            $bobotPerawatan = $checkPerawatani[0];
+
+            $checkFituri = explode(".",$table_ac_Eksekusi[$BSK]['Fitur']);
+            $bobotFitur = $checkFituri[0];
+
+            $bobotDesain = $table_ac_Eksekusi[$BSK]['Desain'];
+            $bobotKetahanan = $table_ac_Eksekusi[$BSK]['Ketahanan'];
+
+            if (round($bobotCapasitas, 2) < round(1.0, 2))
+            {
+                $PembobotanKriDB->Capasitas = 3;
+            }
+            elseif (round($bobotCapasitas, 2) >= round(1.0, 2) AND round($bobotCapasitas, 2) <= round(2.0, 2))
+            {
+                $PembobotanKriDB->Capasitas = 5;
+            }
+            elseif (round($bobotCapasitas, 2)> round(2.0, 2))
+            {
+                $PembobotanKriDB->Capasitas = 7;
+            }
+            // ---------------------------------------------------------------------------
+
+            if ($bobotGaransi <= 1)
+            {
+                $PembobotanKriDB->Garansi = 2;
+            }
+            elseif ($bobotGaransi >= 1 AND $bobotGaransi <= 2) 
+            {
+                $PembobotanKriDB->Garansi = 3;
+            }
+            elseif ($bobotGaransi > 2) 
+            {
+                $PembobotanKriDB->Garansi = 5;
+            }
+            // ---------------------------------------------------------------------------
+            if ($bobotListrik <= 900)
+            {
+                $PembobotanKriDB->Listrik = 2;
+            }
+            elseif ($bobotListrik >= 900 AND $bobotListrik <= 1500) 
+            {
+                $PembobotanKriDB->Listrik = 3;
+            }
+            elseif ($bobotListrik >= 1500 AND $bobotListrik <= 2000) 
+            {
+                $PembobotanKriDB->Listrik = 5;
+            }
+            elseif ($bobotListrik > 2000) 
+            {
+                $PembobotanKriDB->Listrik = 7;
+            }
+            // ---------------------------------------------------------------------------
+            if ($bobotPerawatan =='Praktis')
+            {
+                $PembobotanKriDB->Perawatan = 1;
+            }
+            elseif ($bobotPerawatan =='Berkala')
+            {
+                $PembobotanKriDB->Perawatan = 3;
+            }
+            elseif ($bobotPerawatan =='Intens')
+            {
+                $PembobotanKriDB->Perawatan = 5;
+            }
+            // ---------------------------------------------------------------------------
+            if ($bobotFitur =='No Fitur')
+            {
+                $PembobotanKriDB->Fitur = 1;
+            }
+            elseif ($bobotFitur =='Simple')
+            {
+                $PembobotanKriDB->Fitur = 3;
+            }
+            elseif ($bobotFitur =='Full Fitur')
+            {
+                $PembobotanKriDB->Fitur = 5;
+            }
+            //----------------------------------------------------------------------------
+            if ($bobotDesain =='Standard')
+            {
+                $PembobotanKriDB->Desain = 1;
+            }
+            elseif ($bobotDesain =='Simple')
+            {
+                $PembobotanKriDB->Desain = 3;
+            }
+            elseif ($bobotDesain =='Stylish')
+            {
+                $PembobotanKriDB->Desain = 5;
+            }
+            // ---------------------------------------------------------------------------
+            if ($bobotKetahanan =='Standard')
+            {
+                $PembobotanKriDB->Ketahanan = 1;
+            }
+            elseif ($bobotKetahanan =='Menengah')
+            {
+                $PembobotanKriDB->Ketahanan = 3;
+            }
+            elseif ($bobotKetahanan =='Kuat')
+            {
+                $PembobotanKriDB->Ketahanan = 5;
+            }
+            // ---------------------------------------------------------------------------
+            $PembobotanKriDB->save();
         }
 
-        for ($al=0; $al < $jumlahmatrix ; $al++) 
-        { 
-            $RankingAlternatif[$al] = 0;
+
+                //sampe sini pikirin cara setelah dibobotin masuk ke function dibawah ini 
+                //dan cari cara biar bisa diurutin
+                //dan save history
+                // dd('wait');
+
+        for ($ah=0; $ah < $jumlahmatrix ; $ah++) 
+        {   
+            $tempid = $idFilter[$ah];
+            // $table_bobot_ac[$ah] = DB::select('SELECT * FROM table_bobot_ac WHERE id_AC = ?', [$tempid] );
+            $table_bobot_ac[$ah] = Table_Bobot_AC::WHERE('id_AC', '=', $tempid)->get();
         }
 
-        $table_bobot_ac = Table_Bobot_AC::find($kor);
+        // $bismillah = 'Capasitas';
+        // dd($table_bobot_ac[1][0]->$bismillah);
+        // dd($table_bobot_ac);
+        // dd($table_bobot_ac[1][0]->Capasitas);
+        // $table_bobot_ac = Table_Bobot_AC::find($idFilter);
 
         // $jumlahmatrix = 8;
-        // $fak;
-
         // $table_bobot_ac = array(5,3,7,6,6,-3,-4,-3,5,3,3,-5,-7,6,3,4,6,-5,-3,-4,-7,-8,-2,-5,-6,-5,-6,-2);
-        
         for ($L=0; $L < $JumlahKriteria; $L++)
         {
             $p=0;
             for ($i=0; $i < $jumlahmatrix; $i++) 
             {
                 for ($j=0; $j < $jumlahmatrix; $j++)
-                { 
+                {
                     if ($i==$j)
                     {
                         $matrixPure[$i][$j] = 1;
                         $matrix[$i][$j] = pow(1,2);
+                        $matrixChecking[$i][$j] = '1';
                     }
                     else if($i<$j)
                     {
-                        // $matrix[$i][$j] = pow($table_bobot_ac[$p][$namaKrit[$L]],2);
-                        // $matrix[$j][$i] = pow(1/($table_bobot_ac[$p][$namaKrit[$L]]),2);
-                        // $check = explode("-",$table_bobot_ac[$p]);
-                        $check = explode("-",$table_bobot_ac[$p]);
-                        if ($check[0]=="")
+                        $bis = $namaKrit[$L];
+                        // $pls = $table_bobot_ac[$p][0]->$fak;
+                        // $check = explode("-", $table_bobot_ac[$p][0]->$fak);
+                        if($table_bobot_ac[$i][0]->$bis > $table_bobot_ac[$j][0]->$bis)
                         {
-                            $matrixPure[$i][$j] = 1/($table_bobot_ac[$p][$namaKrit[$L]]);
-                            $matrixPure[$j][$i] = $table_bobot_ac[$p][$namaKrit[$L]]*1;
-
-                            $matrix[$i][$j] = pow((1/$table_bobot_ac[$p][$namaKrit[$L]]),2);
-                            $matrix[$j][$i] = pow(($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                            $matrixPure[$i][$j] = ($table_bobot_ac[$i][0]->$bis) - ($table_bobot_ac[$j][0]->$bis);
+                            $matrix[$i][$j] = pow(($matrixPure[$i][$j]),2);
                         }
-                        else
+                        elseif($table_bobot_ac[$i][0]->$bis == $table_bobot_ac[$j][0]->$bis) 
                         {
-                            $matrixPure[$i][$j] = $table_bobot_ac[$p][$namaKrit[$L]];
-                            $matrixPure[$j][$i] = 1/($table_bobot_ac[$p][$namaKrit[$L]]);
-
-                            $matrix[$i][$j] = pow(($table_bobot_ac[$p][$namaKrit[$L]]),2);
-                            $matrix[$j][$i] = pow(1/($table_bobot_ac[$p][$namaKrit[$L]]),2);
+                            $matrixPure[$i][$j] = 1;
+                            $matrix[$i][$j] = pow(1,2);
                         }
-                        $p = $p + 1;
+                        elseif($table_bobot_ac[$i][0]->$bis < $table_bobot_ac[$j][0]->$bis)
+                        {
+                            $matrixPure[$i][$j] = ($table_bobot_ac[$j][0]->$bis) - ($table_bobot_ac[$i][0]->$bis);
+                            $matrixPure[$i][$j] = 1/$matrixPure[$i][$j];
+                            $matrix[$i][$j] = pow(($matrixPure[$i][$j]),2);
+                        }
+
+                        if ($matrixPure[$i][$j] > 1)
+                        {
+                            $matrixPure[$j][$i] = 1/$matrixPure[$i][$j];
+                            $matrix[$j][$i] = pow(($matrixPure[$j][$i]), 2);
+                        }
+                        elseif ($matrixPure[$i][$j] == 1)
+                        {
+                            $matrixPure[$j][$i] = 1;
+                            $matrix[$j][$i] = pow(1,2);
+                        }
+                        elseif ($matrixPure[$i][$j] < 1)
+                        {
+                            $matrixPure[$j][$i] = ($table_bobot_ac[$j][0]->$bis) - ($table_bobot_ac[$i][0]->$bis);
+                            $matrix[$j][$i] = pow(($matrixPure[$j][$i]), 2);
+                        }
+
                     }
                 }
-            }
+            }//end matrix
 
 
 
@@ -364,6 +603,7 @@ class PagesController extends Controller
 
             for ($s=0; $s <$jumlahmatrix ; $s++) 
             { 
+
                 $SumArray[$s] = sqrt($SumArray[$s]);
             }
 
@@ -386,106 +626,80 @@ class PagesController extends Controller
 
             for ($q=0; $q<$jumlahmatrix ; $q++) 
             { 
+
                 $PowKedua[$q] = pow($SumArrayHorizontal[$q],2);
             }
 
             $SumPowKedua = 0;
             for ($x=0; $x<$jumlahmatrix ; $x++) 
             { 
+
                 $SumPowKedua = $SumPowKedua + $PowKedua[$x];
             }
 
             for ($z=0; $z<$jumlahmatrix ; $z++) 
             { 
+
                 $Wtemporary[$z] = ($SumArrayHorizontal[$z])/(sqrt($SumPowKedua));
             }
 
             $Wj = 0;
             for ($v=0; $v<$jumlahmatrix ; $v++) 
             { 
+
                 $Wj = $Wj + $Wtemporary[$v];
             }
 
             for ($BB=0; $BB<$jumlahmatrix ; $BB++) 
             { 
+
                 $neW[$BB] = $Wtemporary[$BB]/$Wj;
             }
 
             for ($ak=0; $ak<$jumlahmatrix; $ak++) 
-            { 
+            {   
+                $RankingAlternatif[$ak] = 0;
                 $NilaiDikaliBobot[$ak] = $neW[$ak] * ($bobotKrit[$L]);
                 $RankingAlternatif[$ak] = $RankingAlternatif[$ak] + $NilaiDikaliBobot[$ak];
             }
-
-            // $RankingAlternatifBesar[$L] = $RankingAlternatif;
-
-            for($rak=0; $rak<$jumlahmatrix; $rak++)
+            
+            $RankingAlternatifBesar[$L] = $RankingAlternatif;
+            
+            for ($masukDB=0; $masukDB<$jumlahmatrix; $masukDB++) 
             {
-                $urutan[$rak] = $RankingAlternatif[$rak]." ".$kor[$rak];
+                $pushValue = Table_Bobot_AC::firstOrCreate(['id_AC'=>$idFilter[$masukDB]]);
+
+                $nilaiawal = round( ($pushValue->Final_Bobot),10 );
+                // dd($RankingAlternatifBesar[$L][$masukDB]);
+                $pushValue->Final_Bobot = $nilaiawal + $RankingAlternatifBesar[$L][$masukDB];
+                $pushValue->save();
             }
 
-            $urutanBesar[$L] = $urutan;
-            dd($urutanBesar);
-
-            $matrixBesar[$L] = $matrix;
-
-            $SumArraySemuaKriteria[$L] = $SumArray;
-            
-            $matrixNormalisasiBesar[$L] = $matrixNormalisasi;
-            
-            $SumArrayHorizontalBesar[$L] = $SumArrayHorizontal;
-
-            $PowKeduaBesar[$L] = $PowKedua;
-            
-            $SumPowKeduaBesar[$L] = sqrt($SumPowKedua);
-
-            $WtemporaryBesar[$L] = $Wtemporary;
-
-            $CCI[$L] = (sqrt($SumPowKedua))/$jumlahmatrix;
-
-            $Wjbesar[$L] = $Wj;
-
-            $Beta[$L] = 1/$Wj;
-
-            $neWBesar[$L] = $neW;
-            
-            $NilaiDikaliBobotBesar[$L] = $NilaiDikaliBobot;
         }
-        
-        // dd($NilaiDikaliBobotBesar[1][0]);
-        // dd($NilaiDikaliBobotBesar);
-        // dd($NilaiDikaliBobot);
-        // dd($RankingBesar);
-        // dd($RankingAlternatif);
-        // dd($NilaiDikaliBobotBesar);
-        // dd($table_ac);
 
-        $RankingSort = array_reverse(array_sort($RankingAlternatif, function($value)
-        {
-                    return sprintf('%s', $value[0]);
-        }));
-        // dd($RankingSort);
+        $yeay = implode(",", $idFilter);
 
-        $HasilAC = Table_AC::WHERE('Capasitas','>=',$value[0]->rangeStart)
-                            // ->WHERE('Capasitas','<=',$value[0]["rangeEnd"])
-                            ->WHERE('Garansi','>=',$value[1]->rangeStart)
-                            // ->WHERE('Garansi','<=',$value[1]["rangeEnd"])
-                            ->WHERE('Perawatan','=', $Perawatan)
-                            ->WHERE('Fitur', '=', $Fitur)
-                            ->WHERE('Listrik','>=',$value[4]->rangeStart)
-                            // ->WHERE('Listrik','<=',$value[4]["rangeEnd"])
-                            ->WHERE('Desain','=',$Desain)
-                            ->WHERE('Ketahanan','=',$Ketahanan)->get();
-        // dd($HasilAC);
+        $history = new Table_History;
+        $history->Hasil_Rekomendasi = $yeay;
 
-        // dd($RankingSort);
-        return view('pages.Hasil')->with('HasilAC', ($HasilAC))->with('RankingAlternatif', ($RankingAlternatif))->with('RankingSort', json_encode($RankingSort));
-        // return view('pages.login');
+        $history->Jumlah_Kriteria = $JumlahKriteria;
+        $history->Jumlah_Alternatif = $jumlahmatrix;
+
+        $history->Capasitas = $StartRangeCapasitasInputUser.'-'.$EndRangeCapasitasInputUser;
+        $history->Garansi = $StartRangeGaransiInputUser.'-'.$EndRangeGaransiInputUser;
+        $history->Listrik = $StartRangeListrikInputUser.'-'.$EndRangeListrikInputUser;
+        $history->Perawatan = $Perawatan;
+        $history->Fitur = $Fitur;
+        $history->Desain = $Desain;
+        $history->Ketahanan = $Ketahanan;
+
+        $history->save();
+
+        $HasilAC = DB::select('SELECT * FROM table_ac RIGHT JOIN table_bobot_ac ON (table_ac.id = table_bobot_ac.id_AC) WHERE table_ac.id IN ('.$yeay.') GROUP BY table_ac.id ORDER BY table_bobot_ac.Final_Bobot DESC;');
+
+        $status = DB::Update("UPDATE `table_bobot_ac` SET Final_Bobot = 0 WHERE 1");
+
+        return view('pages.Hasil')->with('HasilAC', $HasilAC);
     }
-
-    // public function goHasil()
-    // {
-    //     return view('pages.Hasil');
-    // }
 }
 ?>

@@ -33,7 +33,7 @@
     <link href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
     <!-- jQuery -->
-     <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('bower_components/jquery/dist/jquery.min.js') }}"></script>
 
 
     <script src="{{ asset('js/jquery.js') }}" ></script>
@@ -55,8 +55,8 @@
     <!-- jquery untuk kebawah -->
     <script src="{{ asset('js/easing.js') }}"></script>
 
-     <script src="{{ asset('js/jquery.mixitup.js') }}" ></script>
-     <script src="{{ asset('js/jquery.mixitup.min.js') }}" ></script>
+    <script src="{{ asset('js/jquery.mixitup.js') }}" ></script>
+    <script src="{{ asset('js/jquery.mixitup.min.js') }}" ></script>
 
     <script type="text/javascript">
         jQuery(document).ready(function($) 
@@ -73,31 +73,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="application/x-javascript"> 
         addEventListener("load", function() 
-            {
-                setTimeout(hideURLbar, 0); }, false);
-                function hideURLbar(){ window.scrollTo(0,1); 
-            } 
+        {
+            setTimeout(hideURLbar, 0); }, false);
+        function hideURLbar(){ window.scrollTo(0,1); 
+        } 
     </script>
 
     <script type="text/javascript">
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-    });
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-    var insialisasi = (function ($){
+        var insialisasi = (function ($){
 
-        var addEventListener = function (){
-            $('.jqx-slider').on('change',function (event) {
-                var filter = $(this).attr('filter');
-                handleSlide(filter, event.args.value);
+            var addEventListener = function (){
+                $('.jqx-slider').on('change',function (event) {
+                    var filter = $(this).attr('filter');
+                    handleSlide(filter, event.args.value);
                 // alert(filter);
             });
-        };
+            };
 
-        var handleSlide = function (option, value)
-        {
+            var handleSlide = function (option, value)
+            {
             // filterItems(updateFilter(option, value));
             setLabelValue(this[option + 'Slider'], option, value);
         };
@@ -120,11 +120,11 @@
 
     } ($));
 
-    $(document).ready(function () 
-    {
-        var JumlahKriteria = '{{$JumlahKriteria}}';
-        var TableKriteria = JSON.parse('{!! ($Table_Kriteria) !!}');
-        var SubKriteria = JSON.parse('{!! ($SubKriteria) !!}');
+        $(document).ready(function () 
+        {
+            var JumlahKriteria = '{{$JumlahKriteria}}';
+            var TableKriteria = JSON.parse('{!! ($Table_Kriteria) !!}');
+            var SubKriteria = JSON.parse('{!! ($SubKriteria) !!}');
         // var List_AC = JSON.parse('{!! ($Table_AC) !!}');
         var arraySlider = [];
         var value = [];
@@ -195,20 +195,20 @@
             //     data: {value: value},
             //     type : "POST"
             // });
-            
-            value = JSON.stringify(value);
-            window.location.href = "postValue?value="+value;
-        });
+
+        value = JSON.stringify(value);
+        window.location.href = "postValue?value="+value;
+    });
 
         for (var i = 0; i < JumlahKriteria; i++) 
         {
-                var ni = document.getElementById('grupslider');
-                var namaslider = 'slider'+TableKriteria[i].Nama_Kriteria;
-                var namaPanggilslider = '#slider'+TableKriteria[i].Nama_Kriteria;
-                var namaketeranganmin = 'KetMin'+TableKriteria[i].Nama_Kriteria;
-                var namaketeranganmax = 'KetMax'+TableKriteria[i].Nama_Kriteria;
-                var kriteria = TableKriteria[i].Nama_Kriteria;
-                arraySlider[i] = '#slider'+TableKriteria[i].Nama_Kriteria;
+            var ni = document.getElementById('grupslider');
+            var namaslider = 'slider'+TableKriteria[i].Nama_Kriteria;
+            var namaPanggilslider = '#slider'+TableKriteria[i].Nama_Kriteria;
+            var namaketeranganmin = 'KetMin'+TableKriteria[i].Nama_Kriteria;
+            var namaketeranganmax = 'KetMax'+TableKriteria[i].Nama_Kriteria;
+            var kriteria = TableKriteria[i].Nama_Kriteria;
+            arraySlider[i] = '#slider'+TableKriteria[i].Nama_Kriteria;
                 // var Satuan_SubKriteria = TableKriteria[i].Satuan_SubKriteria;
 
                 var JumlahSubKriteria = TableKriteria[i].Jumlah_SubKriteria;
@@ -386,50 +386,50 @@
                         }
                     }
                 });
-        }
+}
 
         // insialisasi.init();
     });
-    </script>
+</script>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <![endif]-->
 
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <div id="home">
+        <div id="home">
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <div class="logo">
-                <img src="{{ asset('images/umn.png') }}" >
+            <!-- Navigation -->
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <div class="logo">
+                        <img src="{{ asset('images/umn.png') }}" >
+                    </div>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- <a class="navbar-brand" href="{{ URL::to('/') }}">PHI - Admin v1.0</a> -->
                 </div>
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <!-- <a class="navbar-brand" href="{{ URL::to('/') }}">PHI - Admin v1.0</a> -->
-            </div>
-            <!-- /.navbar-header -->
+                <!-- /.navbar-header -->
 
-            <ul class="nav navbar-top-links navbar-right">
-                
-                
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="login"><i class="fa fa-user fa-fw"></i> Login </a>   <!-- {{Session::get('username')}} --></a>
+                <ul class="nav navbar-top-links navbar-right">
+
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="login"><i class="fa fa-user fa-fw"></i> Login </a>   <!-- {{Session::get('username')}} --></a>
 <!--                         </li>
                         <li><a href="login"><i class="fa fa-sign-in fa-fw"></i> Login</a>
                         </li> -->
@@ -488,26 +488,22 @@
     </div>
 
     <!-- List Air Conditioner -->
-        <div id="list" class="List-box">
-            <div class="head text-center">
-                <h3><span> </span> List Air Conditioner</h3>
-                <div id="grupTombol">
-                    <button class="button sort" data-sort="random">Random</button>
-                    <button class="button sort" data-sort="myorder:asc">ASC</button>
-                    <button class="button filter" data-filter="all">All</button>
-                    @foreach($tombolgallery as $AC)
-                        <?php
-                            $temp = $AC->Merek;
-                            $inisial = explode(' ',$AC->Merek);
-                        ?>
-                        <button class="button filter" data-filter=".{{$inisial[0]}}">{{$AC->Merek}}</button>
-                    @endforeach
-                </div>
+    <div id="list" class="List-box">
+        <div class="head text-center">
+            <h3><span> </span> List Air Conditioner</h3>
+            <div id="grupTombol">
+                <button class="button sort" data-sort="random">Random</button>
+                <button class="button sort" data-sort="myorder:asc">ASC</button>
+                <button class="button filter" data-filter="all">All</button>
+                @foreach($tombolgallery as $AC)
+                <?php
+                $temp = $AC->Merek;
+                $inisial = explode(' ',$AC->Merek);
+                ?>
+                <button class="button filter" data-filter=".{{$inisial[0]}}">{{$AC->Merek}}</button>
+                @endforeach
             </div>
-
-                <h3><span> </span> List Air Conditioner in maintenance</h3>
-----------------------------------------------------------------------------------------------------
-
+        </div>
             <div id="ContainerGallery" class="containerList">
             <?php $i=0 ?>
             @foreach($Table_AC as $AC)
@@ -584,122 +580,119 @@
                 ?>
             @endforeach
             </div>
-
-        </div>
+    </div>
 
     <!-- End List Air Conditioner -->
 
     <!-- Decision Support System -->
 
-        <div id="dss" class="DSS">
-            <div class="head text-center">
-                <h2><span> </span> Decision Support System</h2>
-            </div>
-            <div id="grupslider">
-
-            </div>
-
-            <div class=" text-center">
-                <input class="Edit-btn" id="SubmitBtn" value="Submit" type="submit"/>
-            </div>
+    <div id="dss" class="DSS">
+        <div class="head text-center">
+            <h2><span> </span> Decision Support System</h2>
+        </div>
+        <div id="grupslider">
 
         </div>
+
+        <div class=" text-center">
+            <input class="Edit-btn" id="SubmitBtn" value="Submit" type="submit"/>
+        </div>
+
+    </div>
 
     <!-- end Decision Support System -->
 
     <!--Start Questionnare-->
 
-        <div id="quest" class="question-box">
-            <div>    
-                <div class="row">
-                    <div class="col-md-4 col-md-offset-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title head text-center">Questionnaire</h3>
-                            </div>
-                            <div class="panel-body">
+    <div id="quest" class="question-box">
+        <div>    
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title head text-center">Questionnaire</h3>
+                        </div>
+                        <div class="panel-body">
 
                             <?php 
-                                $Q=0;
-                                $N=0;
+                            $Q=0;
+                            $N=0;
                             ?>
                             
                             {!! Form::open(array('url' => 'questionnaire')) !!}
 
 
+                            <fieldset>
                             @foreach($Questionnaire as $Quest)
 
                             <div>
-                            <?php
+                                <?php
                                 $Q=$Quest->id
-                            ?>
-                            <fieldset>
-                                <label>
-                                    {{$Quest->id}}.  {{$Quest->Pertanyaan}} <br/>
-                                </label>
-
-                                <div class="radio">
+                                ?>
                                     <label>
-                                        <?php $N=$N+1 ?>
-                                        <input type="radio" name="Pertanyaan{{$Q}}" id="ss{{$Q}}" value="Quest{{$N}}" />
-                                        Sangat Setuju
+                                        {{$Quest->id}}.  {{$Quest->Pertanyaan}} <br/>
                                     </label>
-                                </div>
 
-                                <div class="radio">
-                                    <label>
-                                        <?php $N=$N+1 ?>
-                                        <input type="radio" name="Pertanyaan{{$Q}}" id="st{{$Q}}" value="Quest{{$N}}" />
-                                        Setuju
-                                    </label>
-                                </div>
+                                    <div class="radio">
+                                        <label>
+                                            <!-- <?php $N=$N+1 ?> -->
+                                            <input type="radio" name={{$Q}} id="ss{{$Q}}" value="SangatSetuju_{{$Q}}" />
+                                            Sangat Setuju
+                                        </label>
+                                    </div>
 
-                                <div class="radio">
-                                    <label>
-                                        <?php $N=$N+1 ?>
-                                        <input type="radio" name="Pertanyaan{{$Q}}" id="n{{$Q}}" value="Quest{{$N}}" />
-                                        Netral
-                                    </label>
-                                </div>
+                                    <div class="radio">
+                                        <label>
+                                            <!-- <?php $N=$N+1 ?> -->
+                                            <input type="radio" name="{{$Q}}" id="st{{$Q}}" value="Setuju_{{$Q}}" />
+                                            Setuju
+                                        </label>
+                                    </div>
 
-                                <div class="radio">
-                                    <label>
-                                        <?php $N=$N+1 ?>
-                                        <input type="radio" name="Pertanyaan{{$Q}}" id="ts{{$Q}}" value="Quest{{$N}}" />
-                                        Tidak Setuju
-                                    </label>
-                                </div>
+                                    <div class="radio">
+                                        <label>
+                                            <!-- <?php $N=$N+1 ?> -->
+                                            <input type="radio" name="{{$Q}}" id="n{{$Q}}" value="Netral_{{$Q}}" />
+                                            Netral
+                                        </label>
+                                    </div>
 
-                                <div class="radio">
-                                    <label>
-                                        <?php $N=$N+1 ?>
-                                        <input type="radio" name="Pertanyaan{{$Q}}" id="sts{{$Q}}" value="Quest{{$N}}" />
-                                        Sangat Tidak Setuju
-                                    </label>
-                                </div>
+                                    <div class="radio">
+                                        <label>
+                                            <!-- <?php $N=$N+1 ?> -->
+                                            <input type="radio" name="{{$Q}}" id="ts{{$Q}}" value="TidakSetuju_{{$Q}}" />
+                                            Tidak Setuju
+                                        </label>
+                                    </div>
 
+                                    <div class="radio">
+                                        <label>
+                                            <!-- <?php $N=$N+1 ?> -->
+                                            <input type="radio" name="{{$Q}}" id="sts{{$Q}}" value="SangatTidakSetuju_{{$Q}}" />
+                                            Sangat Tidak Setuju
+                                        </label>
+                                    </div>
+                            </div>
+                            @endforeach
+                                    <div>
+                                        <textarea class="form-control resizable" rows="3" placeholder="Kritik atau Saran" value="" name="KritikOrSaran"  ></textarea>                                        
+                                    </div>
                             </fieldset>
-                            </div>
-                                @endforeach
 
-                                <textarea class="form-control resizable" rows="3" placeholder="Kritik atau Saran" ></textarea>
-                                <br/>
-                                
-                                    
-                                        <!-- Change this to a button or input when using this as a form -->
-                                        <input type="submit" class="btn btn-lg btn-success btn-block" value="Submit" name="submit">
-                               {!! Form::close() !!}
-                               @if($errors->has())
-                                <p style="color:red">
-                                    <?php print_r($errors->first(0)) ?>
-                                </p>
-                                @endif
-                            </div>
+                            <!-- Change this to a button or input when using this as a form -->
+                            <input type="submit" class="btn btn-lg btn-success btn-block" value="Submit" name="submit">
+                            {!! Form::close() !!}
+                            @if($errors->has())
+                            <p style="color:red">
+                                <?php print_r($errors->first(0)) ?>
+                            </p>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
     <!--End Questionnare-->
 
@@ -724,10 +717,10 @@
 
     <div class="footer">
         <script src="{{ asset('js/move-top.js') }}"></script>
-            <script type="text/javascript">
-                $(document).ready(function() 
-                {
-                    var defaults = {
+        <script type="text/javascript">
+            $(document).ready(function() 
+            {
+                var defaults = {
                         containerID: 'toTop', // fading element id
                         containerHoverID: 'toTopHover', // fading element hover id
                         scrollSpeed: 1200,
@@ -735,8 +728,8 @@
                     };
                     $().UItoTop({ easingType: 'easeOutQuart' });
                 });
-            </script>
-            <a href="#home" id="toTop" style="display: block; background-image:url('{{ asset('images/to-top1.png') }}');"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+        </script>
+        <a href="#home" id="toTop" style="display: block; background-image:url('{{ asset('images/to-top1.png') }}');"> <span id="toTopHover" style="opacity: 1;"> </span></a>
     </div>
 
     <!-- End-Footer -->
@@ -758,11 +751,11 @@
 
     <!-- Page-Level Demo script - Tables - Use for reference -->
     <script>
-    $(document).ready(function() {
-        $('#dataTables-example').DataTable({
+        $(document).ready(function() {
+            $('#dataTables-example').DataTable({
                 responsive: true
+            });
         });
-    });
     </script>
 
 </body>
